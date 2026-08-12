@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@lavaya/types": ["../../packages/types"],
+      "@lavaya/config": ["../../packages/config"],
+      "@lavaya/shared": ["../../packages/shared"]
+    }
+  }
+}

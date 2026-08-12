@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "LavaYa Driver",
+    "slug": "lavaya-driver",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "lavaya-driver",
+    "userInterfaceStyle": "light",
+    "splash": { "backgroundColor": "#17365D" },
+    "ios": { "supportsTablet": true, "bundleIdentifier": "com.lavaya.driver" },
+    "android": { "adaptiveIcon": { "backgroundColor": "#17365D" }, "package": "com.lavaya.driver" },
+    "plugins": ["expo-router", "expo-secure-store"],
+    "experiments": { "typedRoutes": true }
+  }
+}

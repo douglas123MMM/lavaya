@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "LavaYa",
+    "slug": "lavaya",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "lavaya",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#146BDB"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.lavaya.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#146BDB"
+      },
+      "package": "com.lavaya.app"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-notifications"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

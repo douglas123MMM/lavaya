@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.pnp.*
+.yarn/*
+
+# Build outputs
+.next/
+.out/
+.expo/
+dist/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Env files (NEVER commit)
+.env
+.env.*
+!.env.example
+
+# Local supabase
+supabase/.branches/
+supabase/.temp/
+
+# Logs
+*.log
+npm-debug.*
+yarn-debug.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Vercel
+.vercel

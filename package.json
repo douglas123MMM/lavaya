@@ -1,0 +1,19 @@
+{
+  "name": "lavaya",
+  "private": true,
+  "version": "1.0.0",
+  "description": "LavaYa - Plataforma de lavanderia bajo demanda",
+  "scripts": {
+    "mobile": "cd apps/mobile && npx expo start",
+    "driver": "cd apps/driver && npx expo start",
+    "admin": "cd apps/admin && npm run dev",
+    "laundry": "cd apps/laundry && npm run dev",
+    "db:reset": "cd supabase && npx supabase db reset",
+    "db:migrate": "cd supabase && npx supabase db push",
+    "lint": "cd apps/mobile && npx expo lint"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ]
+}

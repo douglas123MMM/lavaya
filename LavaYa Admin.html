@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f4f2ee">
+<title>LavaYa — Panel de Administración</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+  :root {
+    --primary: #2563EB;
+    --primary-dark: #1E40AF;
+    --primary-mid: #3B5BDB;
+    --primary-bg: #DBEAFE;
+    --primary-bg-soft: #EFF6FF;
+    --primary-border: #E2E8F0;
+    --primary-border-soft: #BFDBFE;
+    --ink: #1e2b2c;
+    --ink-soft: #3e4a4b;
+    --ink-muted: #4d5f5e;
+    --bg: #f4f2ee;
+    --surface: #ffffff;
+    --danger: #c0392b;
+    --success: #059669;
+    --success-bg: #D1FAE5;
+    --warning: #D97706;
+    --warning-bg: #FEF3C7;
+    --purple: #7C3AED;
+    --purple-bg: #EDE9FE;
+    --radius-sm: 12px;
+    --radius: 16px;
+    --radius-lg: 20px;
+    --radius-pill: 60px;
+    --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --shadow-sm: 0 1px 3px rgba(30,43,44,0.05);
+    --shadow-md: 0 4px 16px rgba(30,43,44,0.07);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { -webkit-font-smoothing:antialiased; color-scheme:light; }
+  body { font-family: var(--font); color: var(--ink); background: var(--bg); min-height:100vh; display:flex; letter-spacing:-0.01em; }
+
+  /* ── Sidebar ── */
+  .sidebar { width: 248px; background: linear-gradient(180deg, #1E40AF 0%, #2563EB 100%); color:#fff; display:flex; flex-direction:column; flex-shrink:0; position:sticky; top:0; height:100vh; padding: 24px 16px; }
+  .logo { display:flex; align-items:center; gap:10px; padding: 0 8px 20px; border-bottom:1px solid rgba(255,255,255,0.15); margin-bottom: 16px; }
+  .logo-mark { width:40px; height:40px; border-radius:12px; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; }
+  .logo-text { font-size:22px; font-weight:700; letter-spacing:-0.02em; }
+  .logo-sub { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.6); }
+
+  .nav { display:flex; flex-direction:column; gap:4px; }
+  .nav-item { display:flex; align-items:center; gap:12px; padding: 12px 14px; border-radius:12px; font-size:14px; font-weight:500; color:rgba(255,255,255,0.75); cursor:pointer; border:none; background:none; width:100%; text-align:left; transition:all 0.2s; }
+  .nav-item i { font-size:16px; width:20px; text-align:center; }
+  .nav-item:hover { background:rgba(255,255,255,0.1); color:#fff; }
+  .nav-item.active { background:#fff; color:var(--primary); font-weight:600; }
+  .nav-badge { margin-left:auto; background:var(--danger); color:#fff; font-size:11px; font-weight:600; min-width:20px; height:20px; border-radius:10px; display:flex; align-items:center; justify-content:center; padding:0 6px; }
+
+  .sidebar-foot { margin-top:auto; padding-top:16px; border-top:1px solid rgba(255,255,255,0.15); }
+  .admin-chip { display:flex; align-items:center; gap:10px; padding:10px 12px; }
+  .admin-avatar { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; }
+  .admin-name { font-size:13px; font-weight:600; }
+  .admin-role { font-size:11px; color:rgba(255,255,255,0.6); }
+
+  /* ── Main ── */
+  .main { flex:1; padding: 28px 32px; overflow-y:auto; max-width:1200px; }
+  .page { display:none; animation: fadeUp 0.35s ease both; }
+  .page.active { display:block; }
+  @keyframes fadeUp { from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)} }
+
+  .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+  .page-title { font-size:28px; font-weight:700; letter-spacing:-0.02em; }
+  .page-sub { font-size:14px; color:var(--ink-muted); margin-top:2px; }
+
+  /* ── Buttons ── */
+  .btn { display:inline-flex; align-items:center; gap:8px; padding: 11px 20px; border-radius:var(--radius-pill); font-size:13px; font-weight:600; cursor:pointer; border:none; transition:all 0.2s; letter-spacing:0.2px; }
+  .btn-gold { background:var(--primary); color:#fff; box-shadow:0 4px 12px rgba(37,99,235,0.25); }
+  .btn-gold:hover { background:var(--primary-dark); transform:translateY(-1px); }
+  .btn-ghost { background:transparent; color:var(--ink-muted); border:1.5px solid var(--primary-border); }
+  .btn-ghost:hover { border-color:var(--primary); color:var(--primary); }
+  .btn-primary { background:var(--primary); color:#fff; }
+  .btn-primary:hover { background:var(--primary-dark); }
+  .btn-danger { background:transparent; color:var(--danger); border:1.5px solid rgba(192,57,43,0.2); }
+  .btn-danger:hover { background:rgba(192,57,43,0.05); }
+  .btn-sm { padding:7px 14px; font-size:12px; border-radius:20px; }
+
+  /* ── Stat cards ── */
+  .stats-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:24px; }
+  .stat-card { background:var(--surface); border-radius:var(--radius-lg); padding:20px; border:1px solid var(--primary-border); box-shadow:var(--shadow-sm); }
+  .stat-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--ink-muted); display:flex; align-items:center; gap:6px; }
+  .stat-label .dot { width:7px; height:7px; border-radius:50%; }
+  .stat-value { font-size:32px; font-weight:700; margin-top:6px; letter-spacing:-0.02em; }
+  .stat-change { font-size:12px; margin-top:4px; }
+  .stat-change.up { color:var(--success); }
+  .stat-change.down { color:var(--danger); }
+
+  /* ── Tables ── */
+  .panel { background:var(--surface); border-radius:var(--radius-lg); border:1px solid var(--primary-border); box-shadow:var(--shadow-sm); overflow:hidden; }
+  .panel-head { padding:18px 22px; border-bottom:1px solid var(--primary-border); display:flex; align-items:center; justify-content:space-between; }
+  .panel-title { font-size:17px; font-weight:700; }
+  table { width:100%; border-collapse:collapse; }
+  th { text-align:left; padding:12px 20px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--ink-muted); border-bottom:1px solid var(--primary-border); }
+  td { padding:14px 20px; font-size:14px; border-bottom:1px solid #F1F5F9; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:var(--primary-bg-soft); }
+
+  /* ── Status pills ── */
+  .status { display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:600; }
+  .status .dot { width:6px; height:6px; border-radius:50%; }
+  .status.pending { background:var(--warning-bg); color:var(--warning); }
+  .status.pending .dot { background:var(--warning); }
+  .status.assigned { background:var(--primary-bg); color:var(--primary); }
+  .status.assigned .dot { background:var(--primary); }
+  .status.washing { background:var(--purple-bg); color:var(--purple); }
+  .status.washing .dot { background:var(--purple); }
+  .status.ready { background:var(--success-bg); color:var(--success); }
+  .status.ready .dot { background:var(--success); }
+  .status.delivered { background:var(--success-bg); color:var(--success); }
+  .status.delivered .dot { background:var(--success); }
+  .status.cancelled { background:#FEE2E2; color:var(--danger); }
+  .status.cancelled .dot { background:var(--danger); }
+
+  .weight-input { width:80px; padding:8px 10px; border:1.5px solid var(--primary-border); border-radius:10px; font-size:13px; font-family:var(--font); color:var(--ink); outline:none; }
+  .weight-input:focus { border-color:var(--primary); }
+  .unit-select { padding:8px 10px; border:1.5px solid var(--primary-border); border-radius:10px; font-size:13px; font-family:var(--font); color:var(--ink); background:var(--surface); outline:none; cursor:pointer; }
+  .unit-select:focus { border-color:var(--primary); }
+  .price-input { width:90px; padding:8px 10px; border:1.5px solid var(--primary-border); border-radius:10px; font-size:13px; font-family:var(--font); color:var(--ink); outline:none; text-align:right; }
+  .price-input:focus { border-color:var(--primary); }
+  .text-input { width:100%; padding:8px 10px; border:1.5px solid var(--primary-border); border-radius:10px; font-size:13px; font-family:var(--font); color:var(--ink); outline:none; }
+  .text-input:focus { border-color:var(--primary); }
+
+  /* ── Toggle ── */
+  .toggle { width:40px; height:22px; border-radius:11px; background:#CBD5E1; position:relative; cursor:pointer; transition:background 0.2s; border:none; }
+  .toggle.on { background:var(--success); }
+  .toggle::after { content:''; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:transform 0.2s; box-shadow:0 1px 3px rgba(0,0,0,0.2); }
+  .toggle.on::after { transform:translateX(18px); }
+
+  /* ── Modal ── */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(30,43,44,0.5); backdrop-filter:blur(4px); z-index:200; align-items:center; justify-content:center; }
+  .modal-overlay.show { display:flex; }
+  .modal { background:var(--surface); border-radius:20px; padding:28px; width:440px; max-width:92vw; box-shadow:var(--shadow-md); animation:modalIn 0.3s ease both; }
+  @keyframes modalIn { from{opacity:0; transform:scale(0.95) translateY(10px)} to{opacity:1; transform:scale(1) translateY(0)} }
+  .modal-title { font-size:20px; font-weight:700; margin-bottom:20px; }
+  .field { margin-bottom:16px; }
+  .field label { display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:6px; letter-spacing:0.3px; }
+  .field input, .field select { width:100%; padding:11px 14px; border:1.5px solid var(--primary-border); border-radius:12px; font-size:14px; font-family:var(--font); color:var(--ink); outline:none; background:var(--surface); }
+  .field input:focus, .field select:focus { border-color:var(--primary); }
+  .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:24px; }
+
+  .toast { position:fixed; bottom:24px; right:24px; background:#1e2b2c; color:#fff; padding:14px 20px; border-radius:12px; font-size:14px; font-weight:500; box-shadow:var(--shadow-md); z-index:300; opacity:0; transform:translateY(10px); transition:all 0.3s ease; display:flex; align-items:center; gap:10px; }
+  .toast.show { opacity:1; transform:translateY(0); }
+  .toast i { color:#4ADE80; }
+
+  .empty { padding:40px; text-align:center; color:var(--ink-muted); font-size:14px; }
+  .tip-box { margin-top:16px; padding:16px 20px; background:var(--primary-bg-soft); border:1px solid var(--primary-border-soft); border-radius:var(--radius); font-size:13px; color:var(--ink-soft); }
+
+  @media (max-width:900px) {
+    .sidebar { display:none; }
+    .main { padding:20px; }
+    .stats-grid { grid-template-columns:repeat(2,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark"><i class="fas fa-hand-holding-droplet"></i></div>
+    <div><div class="logo-text">LavaYa</div><div class="logo-sub">Administración</div></div>
+  </div>
+
+  <nav class="nav">
+    <button class="nav-item active" onclick="showPage('dashboard',this)"><i class="fas fa-chart-pie"></i>Dashboard</button>
+    <button class="nav-item" onclick="showPage('orders',this)"><i class="fas fa-receipt"></i>Pedidos<span class="nav-badge" id="pending-count">0</span></button>
+    <button class="nav-item" onclick="showPage('services',this)"><i class="fas fa-soap"></i>Servicios y Precios</button>
+    <button class="nav-item" onclick="showPage('plans',this)"><i class="fas fa-tags"></i>Planes</button>
+    <button class="nav-item" onclick="showPage('coupons',this)"><i class="fas fa-ticket"></i>Cupones</button>
+    <button class="nav-item" onclick="showPage('clients',this)"><i class="fas fa-users"></i>Clientes</button>
+  </nav>
+
+  <div class="sidebar-foot">
+    <div class="admin-chip">
+      <div class="admin-avatar">A</div>
+      <div><div class="admin-name">Admin LavaYa</div><div class="admin-role">admin@lavaya.com</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- DASHBOARD -->
+  <section class="page active" id="page-dashboard">
+    <div class="page-header"><div><div class="page-title">Dashboard</div><div class="page-sub">Resumen general de tu negocio</div></div></div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label"><span class="dot" style="background:var(--primary)"></span>Pedidos hoy</div><div class="stat-value" id="stat-orders">0</div><div class="stat-change up">+12% vs ayer</div></div>
+      <div class="stat-card"><div class="stat-label"><span class="dot" style="background:var(--success)"></span>Ingresos hoy</div><div class="stat-value" id="stat-revenue">Bs 0</div><div class="stat-change up">+8% vs ayer</div></div>
+      <div class="stat-card"><div class="stat-label"><span class="dot" style="background:var(--warning)"></span>Pendientes</div><div class="stat-value" id="stat-pending">0</div><div class="stat-change">requieren acción</div></div>
+      <div class="stat-card"><div class="stat-label"><span class="dot" style="background:var(--purple)"></span>En proceso</div><div class="stat-value" id="stat-process">0</div><div class="stat-change">lavando / planchando</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">Pedidos recientes</div><button class="btn btn-ghost btn-sm" onclick="showPage('orders', document.querySelectorAll('.nav-item')[1])">Ver todos</button></div>
+      <table><thead><tr><th>Pedido</th><th>Cliente</th><th>Servicio</th><th>Estado</th><th>Total</th></tr></thead><tbody id="recent-orders"></tbody></table>
+    </div>
+  </section>
+
+  <!-- ORDERS -->
+  <section class="page" id="page-orders">
+    <div class="page-header">
+      <div><div class="page-title">Pedidos</div><div class="page-sub">Recibe y procesa los pedidos de tus clientes</div></div>
+      <select class="unit-select" id="order-filter" onchange="renderOrders()">
+        <option value="all">Todos</option>
+        <option value="pending">Pendientes</option>
+        <option value="assigned">Repartidor asignado</option>
+        <option value="washing">En lavandería</option>
+        <option value="ready">Listos</option>
+        <option value="delivered">Entregados</option>
+      </select>
+    </div>
+    <div class="panel">
+      <table><thead><tr><th>Pedido</th><th>Cliente</th><th>Servicio</th><th>Prendas</th><th>Real</th><th>Total</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="orders-body"></tbody></table>
+      <div class="empty" id="orders-empty" style="display:none">No hay pedidos con este filtro</div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="page" id="page-services">
+    <div class="page-header">
+      <div><div class="page-title">Servicios y Precios</div><div class="page-sub">Configura los precios que verán tus clientes en la app</div></div>
+      <button class="btn btn-gold" onclick="openServiceModal()"><i class="fas fa-plus"></i>Nuevo servicio</button>
+    </div>
+    <div class="panel">
+      <table><thead><tr><th>Servicio</th><th>Descripción</th><th>Modo de cobro</th><th>Precio</th><th>Activo</th><th></th></tr></thead><tbody id="services-body"></tbody></table>
+    </div>
+    <div class="tip-box"><strong>💡 Consejo:</strong> Todos los cambios que hagas aquí se reflejan en la app al recargarla. El precio es por prenda.</div>
+  </section>
+
+  <!-- PLANS -->
+  <section class="page" id="page-plans">
+    <div class="page-header">
+      <div><div class="page-title">Planes de suscripción</div><div class="page-sub">Configura los planes mensuales</div></div>
+      <button class="btn btn-gold" onclick="openPlanModal()"><i class="fas fa-plus"></i>Nuevo plan</button>
+    </div>
+    <div class="panel">
+      <table><thead><tr><th>Plan</th><th>Precio/mes</th><th>Modo</th><th>Cantidad</th><th>Recogidas</th><th>Destacado</th><th>Activo</th><th></th></tr></thead><tbody id="plans-body"></tbody></table>
+    </div>
+  </section>
+
+  <!-- COUPONS -->
+  <section class="page" id="page-coupons">
+    <div class="page-header">
+      <div><div class="page-title">Cupones</div><div class="page-sub">Crea códigos de descuento</div></div>
+      <button class="btn btn-gold" onclick="openCouponModal()"><i class="fas fa-plus"></i>Nuevo cupón</button>
+    </div>
+    <div class="panel">
+      <table><thead><tr><th>Código</th><th>Tipo</th><th>Valor</th><th>Usados</th><th>Activo</th><th></th></tr></thead><tbody id="coupons-body"></tbody></table>
+    </div>
+  </section>
+
+  <!-- CLIENTS -->
+  <section class="page" id="page-clients">
+    <div class="page-header">
+      <div><div class="page-title">Clientes</div><div class="page-sub">Busca un cliente y consulta su información completa</div></div>
+      <div style="position:relative">
+        <i class="fas fa-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-muted);font-size:14px"></i>
+        <input type="text" id="client-search" placeholder="Buscar por nombre, email, teléfono o dirección…" style="width:340px;padding:11px 14px 11px 38px;border:1.5px solid var(--primary-border);border-radius:12px;font-size:14px;font-family:var(--font);color:var(--ink);outline:none" oninput="renderClients()">
+      </div>
+    </div>
+    <div class="panel">
+      <table><thead><tr><th>Cliente</th><th>Teléfono</th><th>Dirección</th><th>Pedido en curso</th><th>Total pagado</th><th></th></tr></thead><tbody id="clients-body"></tbody></table>
+      <div class="empty" id="clients-empty" style="display:none">No se encontraron clientes</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="service-modal">
+  <div class="modal">
+    <div class="modal-title" id="service-modal-title">Nuevo servicio</div>
+    <div class="field"><label>Nombre</label><input type="text" id="svc-name" placeholder="Ej: Lavar"></div>
+    <div class="field"><label>Descripción</label><input type="text" id="svc-desc" placeholder="Ej: Lavado profesional"></div>
+    <div class="field"><label>Modo de cobro</label><select id="svc-unit"><option value="prenda">Por prenda</option><option value="kg">Por kilogramo (kg)</option></select></div>
+    <div class="field"><label>Precio ($)</label><input type="number" id="svc-price" step="0.01" min="0" placeholder="0.00"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('service-modal')">Cancelar</button><button class="btn btn-gold" onclick="saveService()">Guardar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="plan-modal">
+  <div class="modal">
+    <div class="modal-title" id="plan-modal-title">Nuevo plan</div>
+    <div class="field"><label>Nombre</label><input type="text" id="plan-name" placeholder="Ej: Premium"></div>
+    <div class="field"><label>Precio mensual ($)</label><input type="number" id="plan-price" step="0.01" min="0" placeholder="0.00"></div>
+    <div class="field"><label>Modo de cobro</label><select id="plan-unit" onchange="updatePlanUnitLabel()"><option value="prenda">Por prenda</option><option value="kg">Por kilogramo (kg)</option></select></div>
+    <div class="field"><label id="plan-qty-label">Cantidad incluida (prendas)</label><input type="number" id="plan-qty" min="0" placeholder="30"></div>
+    <div class="field"><label>Recogidas al mes</label><input type="number" id="plan-pickups" min="0" placeholder="4"></div>
+    <div class="field"><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="plan-popular" style="width:auto"> Marcar como "Más popular"</label></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('plan-modal')">Cancelar</button><button class="btn btn-gold" onclick="savePlan()">Guardar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="coupon-modal">
+  <div class="modal">
+    <div class="modal-title">Nuevo cupón</div>
+    <div class="field"><label>Código</label><input type="text" id="cpn-code" placeholder="LAVAYA20"></div>
+    <div class="field"><label>Tipo</label><select id="cpn-type"><option value="percentage">Porcentaje (%)</option><option value="fixed">Monto fijo (Bs)</option></select></div>
+    <div class="field"><label>Valor</label><input type="number" id="cpn-value" step="0.01" min="0" placeholder="20"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('coupon-modal')">Cancelar</button><button class="btn btn-gold" onclick="saveCoupon()">Guardar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="client-modal">
+  <div class="modal" style="width:520px">
+    <div class="modal-title" id="client-modal-title">Cliente</div>
+    <div id="client-detail"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('client-modal')">Cerrar</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toast-msg">Guardado</span></div>
+
+<script>
+'use strict';
+
+// ── State (persistido en localStorage COMPARTIDO con la app) ──
+const LS_KEY = 'lavaya_db_v1';
+const OLD_KEY = 'lavaya_admin_v1';
+
+function load() {
+  const raw = localStorage.getItem(LS_KEY);
+  if (raw) { try {
+    const d = JSON.parse(raw);
+    d.plans = (d.plans || []).map(p => ({ unit: 'prenda', qty: (p.kg != null ? p.kg : (p.qty != null ? p.qty : 0)), ...p }));
+    d.services = (d.services || []).map(s => ({ unit: s.unit || 'prenda', ...s }));
+    d.payments = d.payments || [];
+    d.purchaseHistory = d.purchaseHistory || [];
+    return d;
+  } catch(e) {} }
+  const oldRaw = localStorage.getItem(OLD_KEY);
+  if (oldRaw) { try { const d = JSON.parse(oldRaw); if (d.services) return { ...d, payments: [], purchaseHistory: [] }; } catch(e) {} }
+  return {
+    services: [
+      { id:'svc1', name:'Lavar', desc:'Lavado profesional con productos premium', unit:'prenda', price:8, active:true },
+      { id:'svc2', name:'Planchar', desc:'Planchado profesional prenda por prenda', unit:'prenda', price:6, active:true },
+      { id:'svc3', name:'Lavar + Planchar', desc:'Servicio completo de lavado y planchado', unit:'prenda', price:12, active:true },
+      { id:'svc4', name:'Lavado de camisas', desc:'Camisas por prenda', unit:'prenda', price:15, active:true },
+    ],
+    plans: [
+      { id:'plan1', name:'Estudiantil', price:15, unit:'prenda', qty:15, pickups:2, popular:false, active:true },
+      { id:'plan2', name:'Hogar', price:35, unit:'prenda', qty:30, pickups:4, popular:true, active:true },
+      { id:'plan3', name:'Familiar', price:60, unit:'prenda', qty:60, pickups:6, popular:false, active:true },
+      { id:'plan4', name:'Premium', price:90, unit:'prenda', qty:100, pickups:8, popular:false, active:100 },
+    ],
+    coupons: [
+      { id:'cpn1', code:'WELCOME10', type:'percentage', value:10, used:32, active:true },
+      { id:'cpn2', code:'LAVAYA20', type:'percentage', value:20, used:18, active:true },
+      { id:'cpn3', code:'FIRSTORDER', type:'fixed', value:3, used:45, active:true },
+    ],
+    payments: [
+      { id:'pay1', order:'#1001', amount:150, method:'Tarjeta', date:'12 de mayo, 2026', status:'completed' },
+      { id:'pay2', order:'#1002', amount:80, method:'Pago móvil', date:'5 de mayo, 2026', status:'completed' },
+      { id:'pay3', order:'#1003', amount:70, method:'Tarjeta', date:'11 de mayo, 2026', status:'completed' },
+      { id:'pay4', order:'Plan Hogar', amount:35, method:'Tarjeta', date:'1 de mayo, 2026', status:'completed' },
+    ],
+    purchaseHistory: [
+      { id:'h1', order:'#1002', items:'Lavar · 10 prendas', total:80, date:'5 de mayo, 2026' },
+      { id:'h2', order:'#1003', items:'Planchar · 8 prendas', total:70, date:'11 de mayo, 2026' },
+      { id:'h3', order:'#1004', items:'Lavado de camisas · 12 prendas', total:180, date:'18 de abril, 2026' },
+      { id:'h4', order:'#1005', items:'Lavar + Planchar · 20 prendas', total:240, date:'25 de abril, 2026' },
+    ],
+    orders: [
+      { id:'#1001', customer:'María García', service:'Lavar + Planchar', qty:15, unit:'prenda', realQty:null, total:150, status:'washing' },
+      { id:'#1002', customer:'Carlos Pérez', service:'Lavar', qty:10, unit:'prenda', realQty:10, total:80, status:'delivered' },
+      { id:'#1003', customer:'Ana López', service:'Planchar', qty:8, unit:'prenda', realQty:8, total:70, status:'ready' },
+      { id:'#1004', customer:'María García', service:'Lavado de camisas', qty:12, unit:'prenda', realQty:null, total:180, status:'pending' },
+      { id:'#1005', customer:'Luis Torres', service:'Lavar + Planchar', qty:20, unit:'prenda', realQty:null, total:240, status:'assigned' },
+    ],
+    clients: [
+      { id:'cli1', name:'María García', email:'maria@ejemplo.com', phone:'+58 412 000 0000', address:'Av. Bellavista, San Juan de las Moreras, Guárico', city:'San Juan de los Morros', orders:14, spent:450, activeOrder:'#1001 Lavar + Planchar', activeOrderStatus:'washing' },
+      { id:'cli2', name:'Carlos Pérez', email:'carlos@ejemplo.com', phone:'+58 424 111 2222', address:'Calle 8 #45-23, Caracas', city:'Caracas', orders:8, spent:220, activeOrder:null, activeOrderStatus:null },
+      { id:'cli3', name:'Ana López', email:'ana@ejemplo.com', phone:'+58 416 333 4444', address:'Torre Empresarial, Piso 5, Caracas', city:'Caracas', orders:11, spent:310, activeOrder:null, activeOrderStatus:null },
+      { id:'cli4', name:'Luis Torres', email:'luis@ejemplo.com', phone:'+58 412 555 6666', address:'Av. Las Américas 567, Valencia', city:'Valencia', orders:6, spent:180, activeOrder:'#1005 Lavar + Planchar', activeOrderStatus:'assigned' },
+    ],
+  };
+}
+let db = load();
+function save() { localStorage.setItem(LS_KEY, JSON.stringify(db)); }
+
+// ── Navigation ──
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderAll();
+}
+
+// ── Toast ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── Render ──
+const STATUS_META = {
+  pending: { label:'Pendiente', cls:'pending' },
+  assigned: { label:'Repartidor asignado', cls:'assigned' },
+  washing: { label:'En lavandería', cls:'washing' },
+  ready: { label:'Listo', cls:'ready' },
+  delivered: { label:'Entregado', cls:'delivered' },
+  cancelled: { label:'Cancelado', cls:'cancelled' },
+};
+
+function nextStatus(s) { const order=['pending','assigned','washing','ready','delivered']; const i=order.indexOf(s); return i>=0 && i<order.length-1 ? order[i+1] : null; }
+function nextActionLabel(s) { const map={ pending:'Asignar repartidor', assigned:'Recibir en lavandería', washing:'Marcar listo', ready:'Marcar entregado' }; return map[s]||null; }
+
+function renderAll() { renderDashboard(); renderOrders(); renderServices(); renderPlans(); renderCoupons(); renderClients(); }
+
+function renderDashboard() {
+  const pending = db.orders.filter(o => o.status==='pending' || o.status==='assigned').length;
+  const process = db.orders.filter(o => o.status==='washing').length;
+  const revenue = db.orders.filter(o => o.status!=='cancelled').reduce((s,o)=>s+o.total,0);
+  document.getElementById('stat-orders').textContent = db.orders.length;
+  document.getElementById('stat-revenue').textContent = 'Bs ' + revenue;
+  document.getElementById('stat-pending').textContent = pending;
+  document.getElementById('stat-process').textContent = process;
+  document.getElementById('pending-count').textContent = pending;
+  document.getElementById('recent-orders').innerHTML = db.orders.slice(0,5).map(o => {
+    const st = STATUS_META[o.status] || STATUS_META.pending;
+    return `<tr><td style="font-weight:600">${o.id}</td><td>${o.customer}</td><td>${o.service}</td><td><span class="status ${st.cls}"><span class="dot"></span>${st.label}</span></td><td style="font-weight:700">Bs ${o.total}</td></tr>`;
+  }).join('');
+}
+
+function renderOrders() {
+  const filter = document.getElementById('order-filter').value;
+  let list = db.orders;
+  if (filter==='pending') list=list.filter(o=>o.status==='pending');
+  else if (filter==='assigned') list=list.filter(o=>o.status==='assigned');
+  else if (filter==='washing') list=list.filter(o=>o.status==='washing');
+  else if (filter==='ready') list=list.filter(o=>o.status==='ready');
+  else if (filter==='delivered') list=list.filter(o=>o.status==='delivered');
+
+  const body=document.getElementById('orders-body');
+  const empty=document.getElementById('orders-empty');
+  if (list.length===0) { body.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  body.innerHTML = list.map(o => {
+    const st = STATUS_META[o.status] || STATUS_META.pending;
+    const next = nextStatus(o.status);
+    const action = nextActionLabel(o.status);
+    const canWeigh = o.status==='assigned' || o.status==='washing';
+    return `<tr>
+      <td style="font-weight:600">${o.id}</td>
+      <td>${o.customer}</td>
+      <td>${o.service}</td>
+      <td>${o.qty} prendas</td>
+      <td>${canWeigh ? `<input type="number" class="weight-input" value="${o.realQty ?? ''}" placeholder="—" onchange="setQty('${o.id}', this.value)">` : (o.realQty!=null ? o.realQty+' prendas' : '—')}</td>
+      <td style="font-weight:700">Bs ${o.total}</td>
+      <td><span class="status ${st.cls}"><span class="dot"></span>${st.label}</span></td>
+      <td>${action ? `<button class="btn btn-primary btn-sm" onclick="advanceOrder('${o.id}')">${action}</button>` : '<span style="color:var(--ink-muted);font-size:12px">—</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function setQty(id, val) { const o=db.orders.find(x=>x.id===id); if(!o)return; o.realQty = val===''?null:parseInt(val); save(); showToast('Cantidad real registrada para '+id); }
+
+function advanceOrder(id) {
+  const o=db.orders.find(x=>x.id===id); if(!o)return;
+  const next=nextStatus(o.status); if(!next)return;
+  o.status=next; save(); renderAll();
+  showToast(id+' → '+STATUS_META[next].label);
+}
+
+function renderServices() {
+  document.getElementById('services-body').innerHTML = db.services.map(s => `
+    <tr>
+      <td style="font-weight:600">${s.name}</td>
+      <td style="color:var(--ink-muted)">${s.desc}</td>
+      <td><select class="unit-select" onchange="setServiceUnit('${s.id}', this.value)"><option value="prenda" ${s.unit==='prenda'?'selected':''}>Por prenda</option><option value="kg" ${s.unit==='kg'?'selected':''}>Por kilo (kg)</option></select></td>
+      <td><input type="number" class="price-input" value="${s.price}" step="0.01" min="0" onchange="setServicePrice('${s.id}', this.value)"> <span style="font-size:12px;color:var(--ink-muted)">${s.unit==='kg'?'/kg':'/prenda'}</span></td>
+      <td><button class="toggle ${s.active?'on':''}" onclick="toggleService('${s.id}')" aria-label="Activar o desactivar"></button></td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteService('${s.id}')">Eliminar</button></td>
+    </tr>`).join('');
+}
+
+function setServiceUnit(id, unit) { const s=db.services.find(x=>x.id===id); if(s){s.unit=unit;save();renderServices();showToast('Modo de cobro actualizado');} }
+function setServicePrice(id, val) { const s=db.services.find(x=>x.id===id); if(s){s.price=parseFloat(val)||0;save();renderAll();showToast('Precio actualizado');} }
+function toggleService(id) { const s=db.services.find(x=>x.id===id); if(s){s.active=!s.active;save();renderServices();} }
+function deleteService(id) { db.services=db.services.filter(x=>x.id!==id); save(); renderServices(); showToast('Servicio eliminado'); }
+
+function renderPlans() {
+  document.getElementById('plans-body').innerHTML = db.plans.map(p => `
+    <tr>
+      <td style="font-weight:600">${p.name} ${p.popular ? '<span style="background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px">POPULAR</span>' : ''}</td>
+      <td><input type="number" class="price-input" value="${p.price}" step="0.01" min="0" onchange="setPlanPrice('${p.id}', this.value)"></td>
+      <td><select class="unit-select" onchange="setPlanUnit('${p.id}', this.value)"><option value="prenda" ${p.unit==='prenda'?'selected':''}>Por prenda</option><option value="kg" ${p.unit==='kg'?'selected':''}>Por kilo</option></select></td>
+      <td><input type="number" class="weight-input" value="${p.qty}" min="0" onchange="setPlanQty('${p.id}', this.value)"> <span style="font-size:12px;color:var(--ink-muted)">${p.unit==='kg'?'kg':'prendas'}</span></td>
+      <td><input type="number" class="weight-input" value="${p.pickups}" min="0" onchange="setPlanPickups('${p.id}', this.value)"></td>
+      <td><button class="toggle ${p.popular?'on':''}" onclick="togglePlanPopular('${p.id}')" aria-label="Marcar como popular"></button></td>
+      <td><button class="toggle ${p.active?'on':''}" onclick="togglePlanActive('${p.id}')" aria-label="Activar o desactivar"></button></td>
+      <td><button class="btn btn-danger btn-sm" onclick="deletePlan('${p.id}')">Eliminar</button></td>
+    </tr>`).join('');
+}
+function setPlanPrice(id, val) { const p=db.plans.find(x=>x.id===id); if(p){p.price=parseFloat(val)||0;save();renderAll();showToast('Precio del plan actualizado');} }
+function setPlanUnit(id, unit) { const p=db.plans.find(x=>x.id===id); if(p){p.unit=unit;save();renderPlans();showToast('Modo de cobro actualizado');} }
+function setPlanQty(id, val) { const p=db.plans.find(x=>x.id===id); if(p){p.qty=parseInt(val)||0;save();renderPlans();} }
+function setPlanPickups(id, val) { const p=db.plans.find(x=>x.id===id); if(p){p.pickups=parseInt(val)||0;save();renderPlans();} }
+function togglePlanPopular(id) { const p=db.plans.find(x=>x.id===id); if(p){p.popular=!p.popular;save();renderPlans();} }
+function togglePlanActive(id) { const p=db.plans.find(x=>x.id===id); if(p){p.active=!p.active;save();renderPlans();} }
+function deletePlan(id) { db.plans=db.plans.filter(x=>x.id!==id); save(); renderPlans(); showToast('Plan eliminado'); }
+
+function renderCoupons() {
+  document.getElementById('coupons-body').innerHTML = db.coupons.map(c => `
+    <tr>
+      <td style="font-weight:700;font-family:monospace">${c.code}</td>
+      <td>${c.type==='percentage' ? 'Porcentaje' : 'Monto fijo'}</td>
+      <td>${c.type==='percentage' ? c.value+'%' : 'Bs '+c.value}</td>
+      <td>${c.used}</td>
+      <td><button class="toggle ${c.active?'on':''}" onclick="toggleCoupon('${c.id}')" aria-label="Activar o desactivar"></button></td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteCoupon('${c.id}')">Eliminar</button></td>
+    </tr>`).join('');
+}
+function toggleCoupon(id) { const c=db.coupons.find(x=>x.id===id); if(c){c.active=!c.active;save();renderCoupons();} }
+function deleteCoupon(id) { db.coupons=db.coupons.filter(x=>x.id!==id); save(); renderCoupons(); showToast('Cupón eliminado'); }
+
+function renderClients() {
+  const q=(document.getElementById('client-search')?.value||'').toLowerCase();
+  const list=db.clients.filter(c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || (c.phone&&c.phone.toLowerCase().includes(q)) || (c.address&&c.address.toLowerCase().includes(q)));
+  const body=document.getElementById('clients-body');
+  const empty=document.getElementById('clients-empty');
+  if (list.length===0) { body.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  body.innerHTML = list.map(c => {
+    const hasActive = c.activeOrder != null;
+    const st = c.activeOrderStatus ? STATUS_META[c.activeOrderStatus] : null;
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">${c.name.charAt(0)}</div><div><div style="font-weight:500">${c.name}</div><div style="font-size:12px;color:var(--ink-muted)">${c.email}</div></div></div></td>
+      <td>${c.phone||'—'}</td>
+      <td style="color:var(--ink-muted)">${c.address||'—'}</td>
+      <td>${hasActive ? `<span class="status ${st?st.cls:'pending'}"><span class="dot"></span>${st?st.label:'En curso'}</span>` : '<span style="color:var(--ink-muted);font-size:12px">Sin pedido activo</span>'}</td>
+      <td style="font-weight:700">Bs ${c.spent}</td>
+      <td><button class="btn btn-primary btn-sm" onclick="showClientDetail('${c.id}')">Ver</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function showClientDetail(id) {
+  const c=db.clients.find(x=>x.id===id); if(!c)return;
+  const st=c.activeOrderStatus ? STATUS_META[c.activeOrderStatus] : null;
+  const clientOrders=db.orders.filter(o=>o.customer===c.name);
+  document.getElementById('client-modal-title').textContent=c.name;
+  document.getElementById('client-detail').innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--primary-border)">
+      <div style="width:52px;height:52px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px">${c.name.charAt(0)}</div>
+      <div><div style="font-weight:600;font-size:16px">${c.name}</div><div style="font-size:13px;color:var(--ink-muted)">${c.email}</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div style="background:var(--bg);border-radius:12px;padding:14px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--ink-muted);font-weight:600">Teléfono</div><div style="margin-top:4px;font-weight:500">${c.phone||'—'}</div></div>
+      <div style="background:var(--bg);border-radius:12px;padding:14px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--ink-muted);font-weight:600">Ciudad</div><div style="margin-top:4px;font-weight:500">${c.city||'—'}</div></div>
+      <div style="background:var(--bg);border-radius:12px;padding:14px;grid-column:1/3"><div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--ink-muted);font-weight:600">Dirección</div><div style="margin-top:4px;font-weight:500">${c.address||'—'}</div></div>
+      <div style="background:var(--bg);border-radius:12px;padding:14px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--ink-muted);font-weight:600">Total pagado</div><div style="margin-top:4px;font-weight:700;font-size:18px">Bs ${c.spent}</div></div>
+      <div style="background:var(--bg);border-radius:12px;padding:14px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--ink-muted);font-weight:600">Pedido en curso</div><div style="margin-top:4px">${c.activeOrder ? `<span class="status ${st?st.cls:'pending'}"><span class="dot"></span>${st?st.label:'En curso'}</span><div style="font-size:12px;color:var(--ink-muted);margin-top:4px">${c.activeOrder}</div>` : '<span style="color:var(--ink-muted)">Sin pedido activo</span>'}</div></div>
+    </div>
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--ink-muted);font-weight:600;margin-bottom:8px">Historial de pedidos (${c.orders} total)</div>
+    ${clientOrders.length ? clientOrders.map(o => { const ost=STATUS_META[o.status]||STATUS_META.pending; return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg);border-radius:10px;margin-bottom:6px"><span style="font-weight:500;font-size:13px">${o.id} · ${o.service}</span><div style="display:flex;align-items:center;gap:10px"><span style="font-weight:700">Bs ${o.total}</span><span class="status ${ost.cls}"><span class="dot"></span>${ost.label}</span></div></div>`; }).join('') : '<div style="color:var(--ink-muted);font-size:13px">Sin pedidos registrados</div>'}
+  `;
+  openModal('client-modal');
+}
+
+// ── Modals ──
+let editingService=null, editingPlan=null;
+
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function openServiceModal(s) {
+  editingService = s || null;
+  document.getElementById('service-modal-title').textContent = s ? 'Editar servicio' : 'Nuevo servicio';
+  document.getElementById('svc-name').value = s ? s.name : '';
+  document.getElementById('svc-desc').value = s ? s.desc : '';
+  document.getElementById('svc-unit').value = s ? s.unit : 'prenda';
+  document.getElementById('svc-price').value = s ? s.price : '';
+  openModal('service-modal');
+}
+function saveService() {
+  const name=document.getElementById('svc-name').value.trim();
+  const desc=document.getElementById('svc-desc').value.trim();
+  const unit=document.getElementById('svc-unit').value;
+  const price=parseFloat(document.getElementById('svc-price').value)||0;
+  if(!name){alert('Ingresa un nombre');return;}
+  if(editingService){ Object.assign(editingService,{name,desc,unit,price}); }
+  else { db.services.push({id:'svc'+Date.now(),name,desc,unit,price,active:true}); }
+  save(); closeModal('service-modal'); renderServices(); showToast('Servicio guardado');
+}
+
+function openPlanModal(p) {
+  editingPlan = p || null;
+  document.getElementById('plan-modal-title').textContent = p ? 'Editar plan' : 'Nuevo plan';
+  document.getElementById('plan-name').value = p ? p.name : '';
+  document.getElementById('plan-price').value = p ? p.price : '';
+  document.getElementById('plan-unit').value = p ? p.unit : 'prenda';
+  document.getElementById('plan-qty').value = p ? p.qty : '';
+  document.getElementById('plan-pickups').value = p ? p.pickups : '';
+  document.getElementById('plan-popular').checked = p ? p.popular : false;
+  updatePlanUnitLabel();
+  openModal('plan-modal');
+}
+function updatePlanUnitLabel() {
+  const unit=document.getElementById('plan-unit').value;
+  document.getElementById('plan-qty-label').textContent = unit==='kg' ? 'Cantidad incluida (kg)' : 'Cantidad incluida (prendas)';
+}
+function savePlan() {
+  const name=document.getElementById('plan-name').value.trim();
+  const price=parseFloat(document.getElementById('plan-price').value)||0;
+  const unit=document.getElementById('plan-unit').value;
+  const qty=parseInt(document.getElementById('plan-qty').value)||0;
+  const pickups=parseInt(document.getElementById('plan-pickups').value)||0;
+  const popular=document.getElementById('plan-popular').checked;
+  if(!name){alert('Ingresa un nombre');return;}
+  if(editingPlan){ Object.assign(editingPlan,{name,price,unit,qty,pickups,popular}); }
+  else { db.plans.push({id:'plan'+Date.now(),name,price,unit,qty,pickups,popular,active:true}); }
+  save(); closeModal('plan-modal'); renderPlans(); showToast('Plan guardado');
+}
+
+function openCouponModal() {
+  document.getElementById('cpn-code').value='';
+  document.getElementById('cpn-type').value='percentage';
+  document.getElementById('cpn-value').value='';
+  openModal('coupon-modal');
+}
+function saveCoupon() {
+  const code=document.getElementById('cpn-code').value.trim().toUpperCase();
+  const type=document.getElementById('cpn-type').value;
+  const value=parseFloat(document.getElementById('cpn-value').value)||0;
+  if(!code){alert('Ingresa un código');return;}
+  db.coupons.push({id:'cpn'+Date.now(),code,type,value,used:0,active:true});
+  save(); closeModal('coupon-modal'); renderCoupons(); showToast('Cupón creado');
+}
+
+// ── Init ──
+renderAll();
+</script>
+</body>
+</html>

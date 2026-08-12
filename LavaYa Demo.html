@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LavaYa - Demo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+body{background:#E2E8F0;display:flex;justify-content:center;align-items:center;min-height:100vh}
+.phone{width:390px;height:844px;background:#F7FAFC;border-radius:40px;overflow:hidden;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.15);display:flex;flex-direction:column}
+.status{height:44px;background:#F7FAFC;display:flex;justify-content:space-between;align-items:center;padding:0 24px;font-size:14px;font-weight:600;color:#17365D}
+.screen{flex:1;overflow-y:auto;display:none}
+.screen.active{display:block}
+.nav{display:flex;background:#FFF;border-top:1px solid #E4ECF5;padding:6px 0;flex-shrink:0}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 0;border:none;background:none;cursor:pointer;color:#718096;font-size:11px;font-weight:500}
+.nav-btn.active{color:#146BDB}
+.nav-icon{font-size:22px;margin-bottom:2px}
+
+.home-header{padding:20px 20px 8px}
+.greeting{font-size:22px;font-weight:700;color:#17365D}
+.sub{font-size:15px;color:#718096;margin-top:4px}
+.sect-title{font-size:17px;font-weight:600;color:#17365D;padding:20px 20px 10px}
+.svc-grid{display:flex;padding:0 20px;gap:10px}
+.svc-card{flex:1;background:#FFF;border-radius:14px;padding:16px 10px;text-align:center;border:1px solid #E4ECF5;cursor:pointer;transition:all .2s}
+.svc-card:hover{transform:translateY(-2px);border-color:#146BDB}
+.svc-icon{font-size:30px;margin-bottom:6px}
+.svc-name{font-size:14px;font-weight:600;color:#17365D}
+.svc-price{font-size:12px;color:#146BDB;font-weight:500;margin-top:4px}
+.promo{margin:20px;background:#146BDB;border-radius:16px;padding:18px;display:flex;align-items:center}
+.promo-txt{color:#FFF;font-size:15px;font-weight:600;line-height:1.4;flex:1}
+.promo-btn{background:#FFF;color:#146BDB;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:none;cursor:pointer;margin-top:10px}
+.order-preview{margin:10px 20px 20px;background:#FFF;border-radius:14px;padding:16px;border:1px solid #E4ECF5;cursor:pointer}
+.order-head{display:flex;justify-content:space-between;align-items:center}
+.order-num{font-weight:600;color:#17365D;font-size:15px}
+.badge{background:#805AD5;color:#FFF;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+.order-total{font-size:22px;font-weight:700;color:#17365D;margin-top:6px}
+.track-link{background:#E4ECF5;color:#146BDB;text-align:center;padding:8px;border-radius:8px;margin-top:10px;font-size:13px;font-weight:600}
+
+.orders-list{padding:0 20px}
+.order-item{background:#FFF;border-radius:14px;padding:16px;margin-bottom:10px;border:1px solid #E4ECF5;cursor:pointer}
+.order-item .badge{display:inline-block}
+.order-meta{display:flex;justify-content:space-between;margin-top:8px;font-size:13px;color:#718096}
+.order-date{font-size:11px;color:#A0AEC0;margin-top:6px}
+
+.plan-card{background:#FFF;border-radius:14px;padding:20px;margin:0 20px 14px;border:1px solid #E4ECF5;position:relative}
+.plan-card.popular{border:2px solid #146BDB}
+.plan-card.active{border:2px solid #18A56A}
+.pop-tag{position:absolute;top:12px;right:12px;background:#146BDB;color:#FFF;font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px}
+.act-tag{color:#18A56A;font-size:13px;font-weight:600;margin-bottom:6px}
+.plan-name{font-size:19px;font-weight:700;color:#17365D}
+.plan-price{font-size:30px;font-weight:700;color:#146BDB}
+.plan-price span{font-size:14px;font-weight:400;color:#718096}
+.plan-feat{margin-top:14px}
+.plan-feat div{font-size:13px;color:#17365D;margin-bottom:5px}
+.plan-btn{width:100%;padding:12px;border-radius:10px;border:none;font-size:14px;font-weight:600;cursor:pointer;margin-top:14px}
+.plan-btn.primary{background:#146BDB;color:#FFF}
+.plan-btn.outline{background:#E4ECF5;color:#146BDB}
+
+.sub-card{background:#FFF;border-radius:14px;padding:16px;margin:0 20px 12px;border:2px solid #18A56A}
+.progress{height:6px;background:#E4ECF5;border-radius:3px;margin-top:10px}
+.progress-fill{height:6px;background:#146BDB;border-radius:3px}
+.remain{font-size:14px;font-weight:500;color:#146BDB;margin-top:8px}
+.cancel-sub{font-size:12px;color:#E53E3E;font-weight:500;margin-top:10px;cursor:pointer}
+
+.profile-head{padding:20px}
+.profile-card{background:#FFF;border-radius:14px;padding:16px;margin:0 20px;display:flex;align-items:center;border:1px solid #E4ECF5}
+.avatar{width:50px;height:50px;border-radius:25px;background:#146BDB;display:flex;align-items:center;justify-content:center;color:#FFF;font-size:20px;font-weight:700;margin-right:14px}
+.profile-name{font-size:17px;font-weight:600;color:#17365D}
+.profile-email{font-size:13px;color:#718096;margin-top:2px}
+.menu{background:#FFF;margin:12px 20px;border-radius:14px;overflow:hidden;border:1px solid #E4ECF5}
+.menu-item{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #F7FAFC;cursor:pointer;font-size:14px;color:#17365D}
+.menu-item span:first-child{margin-right:10px}
+.menu-item span:last-child{margin-left:auto;color:#A0AEC0}
+.logout{display:flex;align-items:center;justify-content:center;margin:20px;padding:14px;background:#FFF;border-radius:12px;border:1px solid #FED7D7;color:#E53E3E;font-weight:600;cursor:pointer}
+
+.back-header{padding:12px 20px;display:flex;align-items:center;gap:8px}
+.back-header .back-btn{color:#146BDB;font-size:15px;font-weight:500;cursor:pointer;border:none;background:none;text-decoration:none}
+.step-label{font-size:12px;color:#718096;font-weight:500}
+.page-title{font-size:22px;font-weight:700;color:#17365D;margin-bottom:16px}
+.page{padding:0 20px 20px;display:none}
+.page.active{display:block}
+
+.card-opt{background:#FFF;border-radius:14px;padding:16px;margin-bottom:10px;border:1px solid #E4ECF5;display:flex;align-items:center;cursor:pointer;transition:all .2s}
+.card-opt.selected{border:2px solid #146BDB;background:#EBF4FF}
+.card-opt .emoji{font-size:32px;margin-right:14px}
+.card-opt .info{flex:1}
+.card-opt .info .title{font-size:15px;font-weight:600;color:#17365D}
+.card-opt .info .desc{font-size:13px;color:#718096;margin-top:2px}
+.card-opt .info .price{font-size:14px;font-weight:600;color:#146BDB;margin-top:4px}
+.input{width:100%;padding:12px 14px;border:1px solid #E4ECF5;border-radius:10px;font-size:15px;background:#FFF;margin-top:12px;outline:none}
+.input:focus{border-color:#146BDB}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
+.btn-primary{background:#146BDB;color:#FFF;margin-top:20px}
+.btn-primary:disabled{opacity:0.5}
+.add-btn{border:1px dashed #146BDB;color:#146BDB;text-align:center;padding:12px;border-radius:10px;margin-bottom:20px;cursor:pointer;font-size:14px;font-weight:500}
+
+.chips{display:flex;gap:8px;margin:8px 0}
+.chip{padding:6px 14px;border-radius:8px;border:1px solid #E4ECF5;font-size:13px;cursor:pointer;background:#F7FAFC}
+.chip.active{background:#EBF4FF;border-color:#146BDB;color:#146BDB;font-weight:600}
+
+.delivery-cards{display:flex;gap:10px;margin:8px 0}
+.dc{flex:1;background:#FFF;border-radius:12px;padding:16px;text-align:center;border:1px solid #E4ECF5;cursor:pointer}
+.dc.selected{border:2px solid #146BDB;background:#EBF4FF}
+.dc .type{font-size:14px;font-weight:600;color:#17365D}
+.dc .price{font-size:13px;color:#146BDB;font-weight:500;margin-top:4px}
+
+.summary{background:#FFF;border-radius:14px;padding:16px;border:1px solid #E4ECF5}
+.summary .row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}
+.summary .row .label{color:#4A5568}
+.summary .row .value{font-weight:500;color:#17365D}
+.divider{height:1px;background:#E4ECF5;margin:8px 0}
+.total-row{font-size:17px!important;font-weight:700!important}
+.total-row .value{color:#146BDB!important}
+.disc{font-size:12px;color:#A0AEC0;margin-top:8px;font-style:italic}
+
+.timeline{padding:0 20px}
+.tl-item{display:flex;margin-bottom:20px;position:relative}
+.tl-dot{width:12px;height:12px;border-radius:6px;background:#E4ECF5;margin-top:3px;flex-shrink:0}
+.tl-dot.done{background:#18A56A}
+.tl-dot.now{background:#146BDB;width:14px;height:14px;border-radius:7px}
+.tl-line{position:absolute;left:5px;top:18px;width:2px;height:40px;background:#E4ECF5}
+.tl-line.done{background:#18A56A}
+.tl-label{margin-left:14px;font-size:14px;color:#A0AEC0}
+.tl-label.done{color:#17365D;font-weight:500}
+.now-tag{background:#EBF4FF;color:#146BDB;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;margin-left:8px}
+
+.stars{display:flex;gap:6px;justify-content:center;margin:16px 0}
+.stars button{background:none;border:none;font-size:32px;cursor:pointer}
+.stars button.active{color:#D69E2E}
+
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:100;justify-content:center;align-items:center}
+.modal.show{display:flex}
+.modal-content{background:#FFF;border-radius:16px;padding:24px;width:320px;text-align:center}
+.modal-content h3{font-size:18px;margin-bottom:12px;color:#17365D}
+.modal-content p{font-size:14px;color:#718096;margin-bottom:16px}
+.modal-content button{background:#146BDB;color:#FFF;border:none;padding:10px 24px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer}
+.new-form{background:#FFF;border-radius:14px;padding:16px;margin:12px 0;border:1px solid #E4ECF5}
+.form-actions{display:flex;justify-content:space-between;margin-top:12px}
+.form-actions button{padding:8px 20px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none}
+
+@media(max-width:420px){.phone{width:100%;height:100vh;border-radius:0}}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="status"><span>9:41</span><span>🔋 ▂ ▂ ▂</span></div>
+
+  <!-- HOME SCREEN -->
+  <div class="screen active" id="screen-home">
+    <div class="home-header">
+      <div class="greeting">Hola, Maria 👋</div>
+      <div class="sub">Que necesitas hoy?</div>
+    </div>
+    <div class="sect-title">Servicios</div>
+    <div class="svc-grid">
+      <div class="svc-card" onclick="startOrder('svc-wash')">
+        <div class="svc-icon">🫧</div><div class="svc-name">Lavar</div><div class="svc-price">$1.50/kg</div>
+      </div>
+      <div class="svc-card" onclick="startOrder('svc-iron')">
+        <div class="svc-icon">👔</div><div class="svc-name">Planchar</div><div class="svc-price">$2.00/kg</div>
+      </div>
+      <div class="svc-card" onclick="startOrder('svc-full')">
+        <div class="svc-icon">🧺</div><div class="svc-name">Lavar + Planchar</div><div class="svc-price">$3.00/kg</div>
+      </div>
+    </div>
+    <div class="promo">
+      <div>
+        <div class="promo-txt">Lavamos, planchamos y lo llevamos por ti.</div>
+        <button class="promo-btn" onclick="startOrder()">Agendar servicio</button>
+      </div>
+    </div>
+    <div class="sect-title">Tu proximo pedido</div>
+    <div class="order-preview" onclick="showScreen('tracking')">
+      <div class="order-head"><span class="order-num">Pedido #1001</span><span class="badge">Lavando</span></div>
+      <div class="order-total">$27.00</div>
+      <div class="track-link">Ver seguimiento</div>
+    </div>
+  </div>
+
+  <!-- ORDERS SCREEN -->
+  <div class="screen" id="screen-orders">
+    <div style="padding:20px 20px 12px"><div style="font-size:22px;font-weight:700;color:#17365D">Mis pedidos</div></div>
+    <div class="orders-list">
+      <div class="order-item" onclick="showScreen('tracking')"><div class="order-head"><span class="order-num">Pedido #1001</span><span class="badge" style="background:#805AD5">Lavando</span></div><div class="order-meta"><span>Peso est: 8kg</span><span>Total: $27.00</span></div><div class="order-date">12 ago 2026</div></div>
+      <div class="order-item" onclick="showScreen('tracking')"><div class="order-head"><span class="order-num">Pedido #1002</span><span class="badge" style="background:#18A56A">Entregada</span></div><div class="order-meta"><span>Peso est: 5kg</span><span>Total: $10.50</span></div><div class="order-date">5 ago 2026</div></div>
+      <div class="order-item" onclick="showScreen('tracking')"><div class="order-head"><span class="order-num">Pedido #1003</span><span class="badge" style="background:#18A56A">Lista</span></div><div class="order-meta"><span>Peso est: 3kg</span><span>Total: $9.00</span></div><div class="order-date">11 ago 2026</div></div>
+    </div>
+  </div>
+
+  <!-- PLANS SCREEN -->
+  <div class="screen" id="screen-plans">
+    <div style="padding:20px 20px 8px"><div style="font-size:22px;font-weight:700;color:#17365D">Planes</div><div style="font-size:14px;color:#718096;margin-top:4px">Elige el plan perfecto para ti</div></div>
+
+    <div class="sub-card">
+      <div class="act-tag">Tu plan activo</div>
+      <div class="plan-name" style="font-size:17px">Estandar</div>
+      <div style="font-size:14px;color:#718096;margin-top:4px">Has usado 12kg de 20kg</div>
+      <div class="progress"><div class="progress-fill" style="width:60%"></div></div>
+      <div class="remain">Te quedan 8kg este mes</div>
+      <div class="cancel-sub" onclick="alert('Suscripcion cancelada (demo)')">Cancelar suscripcion</div>
+    </div>
+
+    <div class="plan-card popular">
+      <div class="pop-tag">MAS POPULAR</div>
+      <div class="plan-name">Estandar</div>
+      <div class="plan-price">$17.99<span>/mes</span></div>
+      <div style="font-size:13px;color:#718096;margin-top:4px">Perfecto para familias pequenas</div>
+      <div class="plan-feat"><div>✓ Hasta 20kg</div><div>✓ 4 recogidas/mes</div><div>✓ Lavado incluido</div><div>✓ Planchado incluido</div><div>✓ Entrega estandar</div><div>✓ 10% descuento</div></div>
+      <button class="plan-btn primary" onclick="alert('Suscripcion simulada a Estandar')">Activo</button>
+    </div>
+
+    <div class="plan-card">
+      <div class="plan-name">Basico</div>
+      <div class="plan-price">$9.99<span>/mes</span></div>
+      <div style="font-size:13px;color:#718096;margin-top:4px">Ideal para uso personal ligero</div>
+      <div class="plan-feat"><div>✓ Hasta 10kg</div><div>✓ 2 recogidas/mes</div><div>✓ Lavado incluido</div><div>✗ Planchado</div><div>✓ Entrega estandar</div></div>
+      <button class="plan-btn outline" onclick="alert('Suscripcion simulada a Basico')">Suscribirse</button>
+    </div>
+
+    <div class="plan-card">
+      <div class="plan-name">Premium</div>
+      <div class="plan-price">$29.99<span>/mes</span></div>
+      <div style="font-size:13px;color:#718096;margin-top:4px">La mejor experiencia LavaYa</div>
+      <div class="plan-feat"><div>✓ Hasta 40kg</div><div>✓ 8 recogidas/mes</div><div>✓ Lavado incluido</div><div>✓ Planchado incluido</div><div>✓ Entrega prioritaria</div><div>✓ 15% descuento</div></div>
+      <button class="plan-btn outline" onclick="alert('Suscripcion simulada a Premium')">Suscribirse</button>
+    </div>
+  </div>
+
+  <!-- PROFILE SCREEN -->
+  <div class="screen" id="screen-profile">
+    <div class="profile-head"><div style="font-size:22px;font-weight:700;color:#17365D">Perfil</div></div>
+    <div class="profile-card">
+      <div class="avatar">M</div>
+      <div><div class="profile-name">Maria Garcia</div><div class="profile-email">maria@demo.com</div></div>
+    </div>
+    <div class="menu">
+      <div class="menu-item" onclick="alert('Editar perfil (demo)')"><span>👤</span> Mi perfil <span>›</span></div>
+      <div class="menu-item" onclick="showScreen('addresses')"><span>📍</span> Mis direcciones <span>›</span></div>
+      <div class="menu-item" onclick="alert('Metodos de pago (demo)')"><span>💳</span> Metodos de pago <span>›</span></div>
+      <div class="menu-item" onclick="alert('Notificaciones (demo)')"><span>🔔</span> Notificaciones <span>›</span></div>
+      <div class="menu-item" onclick="showScreen('support')"><span>❓</span> Ayuda y soporte <span>›</span></div>
+    </div>
+    <div class="menu">
+      <div class="menu-item"><span>📄</span> Terminos y condiciones <span>›</span></div>
+      <div class="menu-item"><span>🔒</span> Privacidad <span>›</span></div>
+    </div>
+    <div class="logout" onclick="alert('Sesion cerrada (demo)')">🚪 Cerrar sesion</div>
+  </div>
+
+  <!-- CHECKOUT PAGES -->
+  <div class="screen" id="screen-checkout-1">
+    <div class="back-header"><button class="back-btn" onclick="showScreen('home')">← Volver</button></div>
+    <div class="page active" style="padding:0 20px 20px">
+      <div class="step-label">Paso 1 de 4</div>
+      <div class="page-title">Selecciona el servicio</div>
+      <div class="card-opt selected" id="opt-wash" onclick="selectService('svc-wash')"><div class="emoji">🫧</div><div class="info"><div class="title">Lavar</div><div class="desc">Lavado profesional con productos premium</div><div class="price">$1.50/kg</div></div></div>
+      <div class="card-opt" id="opt-iron" onclick="selectService('svc-iron')"><div class="emoji">👔</div><div class="info"><div class="title">Planchar</div><div class="desc">Planchado profesional prenda por prenda</div><div class="price">$2.00/kg</div></div></div>
+      <div class="card-opt" id="opt-full" onclick="selectService('svc-full')"><div class="emoji">🧺</div><div class="info"><div class="title">Lavar + Planchar</div><div class="desc">Servicio completo de lavado y planchado</div><div class="price">$3.00/kg</div></div></div>
+      <div style="font-size:14px;font-weight:600;color:#17365D;margin-top:16px">Peso estimado (kg)</div>
+      <input class="input" type="number" id="weight" placeholder="Ej: 5" value="5" style="margin-top:8px">
+      <button class="btn btn-primary" onclick="nextStep(2)">Continuar</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-checkout-2">
+    <div class="back-header"><button class="back-btn" onclick="nextStep(1)">← Volver</button></div>
+    <div class="page active" style="padding:0 20px 20px">
+      <div class="step-label">Paso 2 de 4</div>
+      <div class="page-title">Direccion de recogida</div>
+      <div class="card-opt selected" id="addr-card-0" onclick="selectAddress(0)"><div class="info"><div class="title">🏠 Casa</div><div class="desc">Av. Bolivar 123, Apt 4B</div></div></div>
+      <div class="card-opt" id="addr-card-1" onclick="selectAddress(1)"><div class="info"><div class="title">🏢 Trabajo</div><div class="desc">Torre Empresarial, Piso 5</div></div></div>
+      <div class="add-btn" onclick="document.getElementById('new-addr-form').style.display='block'">+ Agregar nueva direccion</div>
+      <div class="new-form" id="new-addr-form" style="display:none">
+        <div class="chips">
+          <span class="chip active" onclick="this.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));this.classList.add('active')">Casa</span>
+          <span class="chip" onclick="this.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));this.classList.add('active')">Trabajo</span>
+          <span class="chip" onclick="this.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));this.classList.add('active')">Oficina</span>
+        </div>
+        <input class="input" placeholder="Direccion" style="margin-top:4px">
+        <input class="input" placeholder="Instrucciones (opcional)" style="margin-top:8px">
+        <div class="form-actions"><button style="color:#718096;background:none" onclick="this.closest('.new-form').style.display='none'">Cancelar</button><button style="background:#146BDB;color:#FFF" onclick="this.closest('.new-form').style.display='none';alert('Direccion guardada (demo)')">Guardar</button></div>
+      </div>
+      <button class="btn btn-primary" onclick="nextStep(3)">Continuar</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-checkout-3">
+    <div class="back-header"><button class="back-btn" onclick="nextStep(2)">← Volver</button></div>
+    <div class="page active" style="padding:0 20px 20px">
+      <div class="step-label">Paso 3 de 4</div>
+      <div class="page-title">Fecha y horario</div>
+      <div style="font-size:15px;font-weight:600;color:#17365D;margin-top:8px">Dia de recogida</div>
+      <div class="chips" style="margin:10px 0">
+        <span class="chip active" onclick="this.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));this.classList.add('active')">Hoy</span>
+        <span class="chip" onclick="this.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));this.classList.add('active')">Manana</span>
+      </div>
+      <div style="font-size:15px;font-weight:600;color:#17365D;margin-top:12px">Horario</div>
+      <div class="card-opt selected" style="margin-top:8px"><div class="info"><div class="title">2:00 PM - 4:00 PM</div></div></div>
+      <div class="card-opt"><div class="info"><div class="title">4:00 PM - 6:00 PM</div></div></div>
+      <div style="font-size:15px;font-weight:600;color:#17365D;margin-top:12px">Tipo de entrega</div>
+      <div class="delivery-cards">
+        <div class="dc selected" onclick="this.parentElement.querySelectorAll('.dc').forEach(d=>d.classList.remove('selected'));this.classList.add('selected')"><div class="type">Estandar</div><div class="price">$3.00</div></div>
+        <div class="dc" onclick="this.parentElement.querySelectorAll('.dc').forEach(d=>d.classList.remove('selected'));this.classList.add('selected')"><div class="type">Prioritario</div><div class="price">$5.00</div></div>
+      </div>
+      <button class="btn btn-primary" onclick="nextStep(4)">Continuar</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-checkout-4">
+    <div class="back-header"><button class="back-btn" onclick="nextStep(3)">← Volver</button></div>
+    <div class="page active" style="padding:0 20px 20px">
+      <div class="step-label">Paso 4 de 4</div>
+      <div class="page-title">Confirmar pedido</div>
+      <div class="summary">
+        <div class="row"><span class="label">Servicio</span><span class="value" id="sum-service">Lavar + Planchar</span></div>
+        <div class="row"><span class="label">Peso estimado</span><span class="value" id="sum-weight">5 kg</span></div>
+        <div class="row"><span class="label">Fecha</span><span class="value">Hoy</span></div>
+        <div class="row"><span class="label">Horario</span><span class="value">14:00 - 16:00</span></div>
+        <div class="row"><span class="label">Entrega</span><span class="value">Estandar</span></div>
+        <div class="divider"></div>
+        <div class="row"><span class="label" id="sum-svc-label">Servicio (5kg x $3.00)</span><span class="value" id="sum-svc-price">$15.00</span></div>
+        <div class="row"><span class="label">Delivery</span><span class="value">$3.00</span></div>
+        <div class="divider"></div>
+        <div class="row total-row"><span class="label">Total</span><span class="value" id="sum-total">$18.00</span></div>
+      </div>
+      <div class="disc">* Precio estimado. El total final se confirmara despues de pesar tu ropa.</div>
+      <button class="btn btn-primary" onclick="confirmOrder()" id="confirm-btn">Confirmar pedido - $18.00</button>
+    </div>
+  </div>
+
+  <!-- TRACKING SCREEN -->
+  <div class="screen" id="screen-tracking">
+    <div class="back-header"><button class="back-btn" onclick="showScreen('orders')">← Volver</button></div>
+    <div style="padding:0 20px">
+      <div class="page-title" style="margin-bottom:4px">Seguimiento</div>
+      <div style="font-size:14px;color:#718096">Pedido #1001</div>
+      <div class="summary" style="margin-top:12px">
+        <div class="row"><span class="label">Servicio</span><span class="value">Lavar + Planchar</span></div>
+        <div class="row"><span class="label">Peso estimado</span><span class="value">8 kg</span></div>
+        <div class="row"><span class="label">Total</span><span class="value">$27.00</span></div>
+        <div class="row"><span class="label">Fecha recogida</span><span class="value">2026-08-12</span></div>
+      </div>
+      <div style="font-size:16px;font-weight:600;color:#17365D;margin-top:20px;margin-bottom:12px">Estado del pedido</div>
+    </div>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot done"></div><div class="tl-line done"></div><div class="tl-label done">Solicitud recibida</div></div>
+      <div class="tl-item"><div class="tl-dot done"></div><div class="tl-line done"></div><div class="tl-label done">Repartidor asignado</div></div>
+      <div class="tl-item"><div class="tl-dot done"></div><div class="tl-line done"></div><div class="tl-label done">Ropa recogida</div></div>
+      <div class="tl-item"><div class="tl-dot done"></div><div class="tl-line done"></div><div class="tl-label done">Recibida en lavanderia</div></div>
+      <div class="tl-item"><div class="tl-dot now"></div><div class="tl-line"></div><div class="tl-label done">Lavando<span class="now-tag">Actual</span></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-line"></div><div class="tl-label">Secando</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-line"></div><div class="tl-label">Planchando</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-line"></div><div class="tl-label">Lista</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-line"></div><div class="tl-label">En camino al cliente</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-label">Entregada</div></div>
+    </div>
+  </div>
+
+  <!-- ADDRESSES SCREEN -->
+  <div class="screen" id="screen-addresses">
+    <div class="back-header"><button class="back-btn" onclick="showScreen('profile')">← Volver</button></div>
+    <div style="padding:0 20px">
+      <div class="page-title" style="margin-bottom:12px">Mis direcciones</div>
+      <div class="order-item"><div style="display:flex;justify-content:space-between"><span style="font-weight:600;font-size:15px">Casa</span><span style="font-size:11px;color:#146BDB;background:#EBF4FF;padding:2px 8px;border-radius:6px;font-weight:600">Principal</span></div><div style="font-size:14px;color:#4A5568;margin-top:4px">Av. Bolivar 123, Apt 4B</div><div style="font-size:13px;color:#A0AEC0;margin-top:4px">📝 Tocar timbre 3B</div></div>
+      <div class="order-item"><div style="display:flex;justify-content:space-between"><span style="font-weight:600;font-size:15px">Trabajo</span></div><div style="font-size:14px;color:#4A5568;margin-top:4px">Torre Empresarial, Piso 5</div><div style="font-size:13px;color:#A0AEC0;margin-top:4px">📝 Dejar en recepcion</div><div style="margin-top:8px"><span style="font-size:13px;color:#146BDB;font-weight:500;cursor:pointer">Hacer principal</span><span style="font-size:13px;color:#E53E3E;font-weight:500;margin-left:16px;cursor:pointer">Eliminar</span></div></div>
+      <div class="add-btn">+ Agregar nueva direccion</div>
+    </div>
+  </div>
+
+  <!-- SUPPORT SCREEN -->
+  <div class="screen" id="screen-support">
+    <div class="back-header"><button class="back-btn" onclick="showScreen('profile')">← Volver</button></div>
+    <div style="padding:0 20px">
+      <div class="page-title" style="margin-bottom:12px">Ayuda y soporte</div>
+      <div class="summary">
+        <div style="font-size:14px;font-weight:500;color:#17365D;margin-bottom:8px">Categoria</div>
+        <div class="chips" style="margin-bottom:12px;flex-wrap:wrap">
+          <span class="chip active">Mi pedido</span><span class="chip">Pago</span><span class="chip">Recogida</span><span class="chip">Entrega</span><span class="chip">Otro</span>
+        </div>
+        <input class="input" placeholder="Asunto" style="margin-top:0">
+        <textarea class="input" placeholder="Cuentanos que sucede..." style="margin-top:8px;height:100px;resize:none;font-family:inherit" rows="4"></textarea>
+        <button class="btn btn-primary" onclick="alert('Mensaje enviado (demo)')">Enviar mensaje</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="nav">
+    <button class="nav-btn active" onclick="showScreen('home')"><span class="nav-icon">🏠</span>Inicio</button>
+    <button class="nav-btn" onclick="showScreen('orders')"><span class="nav-icon">📦</span>Pedidos</button>
+    <button class="nav-btn" onclick="showScreen('plans')"><span class="nav-icon">✨</span>Planes</button>
+    <button class="nav-btn" onclick="showScreen('profile')"><span class="nav-icon">👤</span>Perfil</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="success-modal">
+  <div class="modal-content">
+    <div style="font-size:40px;margin-bottom:10px">🎉</div>
+    <h3>Pedido creado!</h3>
+    <p>Tu pedido ha sido registrado exitosamente. Te notificaremos cuando sea asignado.</p>
+    <button onclick="closeModal()">OK</button>
+  </div>
+</div>
+
+<script>
+let selectedService = 'svc-full';
+let selectedWeight = 5;
+let selectedAddress = 0;
+
+const services = {'svc-wash':{name:'Lavar',price:1.50},'svc-iron':{name:'Planchar',price:2.00},'svc-full':{name:'Lavar + Planchar',price:3.00}};
+
+const screens = ['home','orders','plans','profile','tracking','addresses','support','checkout-1','checkout-2','checkout-3','checkout-4'];
+const navScreens = ['home','orders','plans','profile'];
+
+function showScreen(name){
+  screens.forEach(s => document.getElementById('screen-'+s).classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', navScreens[i]===name));
+}
+
+function startOrder(svcId){
+  if(svcId) selectService(svcId);
+  showScreen('checkout-1');
+}
+
+function selectService(id){
+  selectedService = id;
+  ['svc-wash','svc-iron','svc-full'].forEach(k => document.getElementById('opt-'+k.replace('svc-','')).classList.toggle('selected', k===id));
+  updateConfirm();
+}
+
+function selectAddress(idx){ selectedAddress = idx; document.querySelectorAll('[id^="addr-card-"]').forEach((el,i) => el.classList.toggle('selected', i===idx)); }
+
+function nextStep(step){
+  if(step===4){
+    const w = parseFloat(document.getElementById('weight')?.value) || 5;
+    selectedWeight = w;
+    updateConfirm();
+  }
+  showScreen('checkout-'+step);
+}
+
+function updateConfirm(){
+  const svc = services[selectedService];
+  const w = selectedWeight;
+  const fee = 3;
+  const svcPrice = svc.price * w;
+  const total = svcPrice + fee;
+  const sumSvc = document.getElementById('sum-service');
+  const sumWeight = document.getElementById('sum-weight');
+  const sumLabel = document.getElementById('sum-svc-label');
+  const sumPrice = document.getElementById('sum-svc-price');
+  const sumTotal = document.getElementById('sum-total');
+  const btn = document.getElementById('confirm-btn');
+  if(sumSvc) sumSvc.textContent = svc.name;
+  if(sumWeight) sumWeight.textContent = w + ' kg';
+  if(sumLabel) sumLabel.textContent = 'Servicio ('+w+'kg x $'+svc.price.toFixed(2)+')';
+  if(sumPrice) sumPrice.textContent = '$'+svcPrice.toFixed(2);
+  if(sumTotal) sumTotal.textContent = '$'+total.toFixed(2);
+  if(btn) btn.textContent = 'Confirmar pedido - $'+total.toFixed(2);
+}
+
+function confirmOrder(){
+  document.getElementById('success-modal').classList.add('show');
+}
+
+function closeModal(){
+  document.getElementById('success-modal').classList.remove('show');
+  showScreen('orders');
+}
+
+updateConfirm();
+</script>
+
+</body>
+</html>
