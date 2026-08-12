@@ -91,3 +91,40 @@ Para habilitar pagos:
 - [ ] Auditoria de seguridad
 - [ ] Tests automatizados
 - [ ] CI/CD pipeline
+
+## Deploy
+
+### Backend (Supabase)
+```bash
+# Reemplaza project_id en supabase/config.toml con tu project_ref real
+cd supabase
+npx supabase link --project-ref <project_ref>
+npx supabase db push          # aplica migrations/001_initial_schema.sql
+# Aplica seed.sql desde el SQL Editor del dashboard
+```
+
+Configurar en Supabase dashboard > Settings > API:
+- Pegar `URL` y `anon key` en `apps/admin/.env.local`, `apps/laundry/.env.local` (como `NEXT_PUBLIC_SUPABASE_*`)
+- Pegar mismas credenciales en `apps/mobile/.env.local`, `apps/driver/.env.local` (como `EXPO_PUBLIC_SUPABASE_*`)
+
+### Web (Vercel)
+- Apps `apps/admin` y `apps/laundry` se despliegan como **2 proyectos separados** en Vercel
+- En cada proyecto Vercel: Settings > General > **Root Directory = `apps/admin`** (o `apps/laundry`)
+- Agregar env vars `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` en Vercel
+- Build command: `next build` (auto-detectado). Output: `.next/`
+
+### Movil (Expo)
+Las apps Expo NO se deployan en Vercel. Para preview en dispositivo:
+```bash
+cd apps/mobile && npx expo start     # escanea QR con Expo Go
+# Para EAS Update (link compartible): eas update --branch main
+```
+
+### Stripe (pendiente)
+Edge Functions en `supabase/functions/` requieren `STRIPE_SECRET_KEY` y `STRIPE_WEBHOOK_SECRET` como secrets en Supabase. Deploy:
+```bash
+cd supabase
+npx supabase functions deploy create-payment-intent
+npx supabase functions deploy stripe-webhook
+npx supabase secrets set STRIPE_SECRET_KEY=sk_test_... STRIPE_WEBHOOK_SECRET=whsec_...
+```

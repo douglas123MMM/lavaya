@@ -129,3 +129,41 @@ profiles, addresses, services, service_addons, plans, subscriptions, orders, ord
 - tabular-nums para numeros
 - text-wrap: balance en headings
 - non-breaking spaces en numeros con unidades
+
+## Deploy (Vercel + Supabase)
+
+### Configuracion creada (12 ago 2026)
+- `.gitignore` raiz (node_modules, .next, .expo, .env*)
+- `supabase/config.toml` (project_id placeholder, redirects Vercel)
+- `packages/{config,shared,ui}/package.json` (workspace members validos)
+- Fix `packages/shared/supabase.ts`: ya no rompe con `../types/database`
+- Fix `packages/config/index.ts`: detecta `EXPO_PUBLIC_*` y `NEXT_PUBLIC_*`
+- `apps/{admin,laundry}/next.config.js` (transpilePackages, outputFileTracingRoot monorepo)
+- `.env.local` placeholder en admin, laundry, mobile, driver
+- Build verificado: admin (11 rutas) y laundry (5 rutas) compilan OK
+- git init + primer commit en rama `main`
+
+### Targets de deploy
+| App | Plataforma | Salida |
+|---|---|---|
+| `apps/admin` | Vercel (Next.js) | 2 proyectos separados, Root Directory = `apps/admin` |
+| `apps/laundry` | Vercel (Next.js) | 2 proyectos separados, Root Directory = `apps/laundry` |
+| `apps/mobile` | Expo (EAS Build/Update) | NO va en Vercel. QR link Expo Go |
+| `apps/driver` | Expo (EAS Build/Update) | NO va en Vercel. QR link Expo Go |
+| `supabase` | Supabase Cloud | db push + functions deploy |
+
+### Pasos manuales restantes (requieren credenciales del usuario)
+1. **Supabase**: pegar `project_ref` real en `supabase/config.toml` y credenciales en los 4 `.env.local`
+2. **Supabase CLI**: `supabase link --project-ref <id>`, `supabase db push`, aplicar `seed.sql` en SQL Editor
+3. **GitHub**: `gh auth login` (o crear remote manual), `git push -u origin main`
+4. **Vercel**: importar repo GitHub, 2 proyectos con Root Directory `apps/admin` y `apps/laundry`, agregar env vars `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+5. **Edge Functions Stripe**: pendiente hasta tener cuenta Stripe (`create-payment-intent`, `stripe-webhook`)
+
+### Env vars por app
+- **Next.js (admin/laundry)**: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- **Expo (mobile/driver)**: `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+
+### URLs canonicas (placeholders)
+- Admin: `https://lavaya-admin.vercel.app`
+- Laundry: `https://lavaya-laundry.vercel.app`
+- Supabase auth redirects ya configurados en `supabase/config.toml`
