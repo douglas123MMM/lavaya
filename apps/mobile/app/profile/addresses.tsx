@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { DEMO_ADDRESSES } from '../../lib/demo';
 
 export default function AddressesScreen() {
-  const [addresses, setAddresses] = useState(DEMO_ADDRESSES);
+  const [addresses, setAddresses] = useState<any[]>(DEMO_ADDRESSES);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ label: 'Casa', address_line: '', instructions: '' });
 

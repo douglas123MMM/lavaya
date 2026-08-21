@@ -34,3 +34,9 @@ Thumbs.db
 
 # Vercel
 .vercel
+.vercel
+.env*
+
+# Directorio externo (no parte de LavaYa)
+dsh-omni-router/
+remote_schema_dump.sql

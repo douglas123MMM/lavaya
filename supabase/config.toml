@@ -1,7 +1,7 @@
 # Configuracion Supabase CLI para LavaYa
 # Reemplaza project_id con el valor real de tu proyecto en https://app.supabase.com/project/_/settings/general
 
-project_id = "lavaya-project-ref-edit-me"
+project_id = "henmnuckpbjywlzhawwg"
 
 [api]
 enabled = true

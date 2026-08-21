@@ -1,94 +1,106 @@
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { DEMO_PLANS, DEMO_SUBSCRIPTION } from '../../lib/demo';
+import { useState, useCallback } from 'react';
+import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { Check, Crown } from 'lucide-react-native';
+import { Screen, PrimaryButton } from '../../lib/ui';
+import { C, F, shadowCard } from '../../lib/theme';
+import { PLANS, BillingCycle, money } from '../../lib/catalog';
 
 export default function PlansScreen() {
-  const subscription = DEMO_SUBSCRIPTION;
+  const [cycle, setCycle] = useState<BillingCycle>('mensual');
+
+  const setBilling = useCallback((mode: BillingCycle) => setCycle(mode), []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <View style={styles.header}>
-          <Text style={styles.title}>Planes</Text>
-          <Text style={styles.subtitle}>Elige el plan perfecto para ti</Text>
+    <Screen>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 28 }}>
+        <View style={s.header}>
+          <Text style={s.title}>Elige tu plan</Text>
+          <Text style={s.subtitle}>Ahorra mas con nuestros planes</Text>
         </View>
 
-        {subscription && (
-          <View style={styles.activeSub}>
-            <Text style={styles.activeLabel}>Tu plan activo</Text>
-            <View style={styles.activeCard}>
-              <Text style={styles.activePlan}>{subscription.plan.name}</Text>
-              <Text style={styles.activeDetail}>Has usado {subscription.used_kg}kg de {subscription.monthly_limit_kg}kg</Text>
-              <View style={styles.progressBar}>
-                <View style={[styles.progressFill, { width: `${(subscription.used_kg / subscription.monthly_limit_kg) * 100}%` }]} />
-              </View>
-              <Text style={styles.activeRemaining}>Te quedan {subscription.monthly_limit_kg - subscription.used_kg}kg este mes</Text>
-              <TouchableOpacity style={styles.cancelButton} onPress={() => Alert.alert('Demo', 'Suscripcion cancelada (demo)')}>
-                <Text style={styles.cancelText}>Cancelar suscripcion</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-
-        <View style={styles.plansContainer}>
-          {DEMO_PLANS.map((plan) => (
-            <View key={plan.id} style={[styles.planCard, plan.is_popular && styles.popularCard]}>
-              {plan.is_popular && <View style={styles.popularBadge}><Text style={styles.popularText}>MAS POPULAR</Text></View>}
-              <Text style={styles.planName}>{plan.name}</Text>
-              <Text style={styles.planPrice}>${plan.price}<Text style={styles.planPeriod}>/mes</Text></Text>
-              <Text style={styles.planDesc}>{plan.description}</Text>
-              <View style={styles.planFeatures}>
-                <Feature text={`Hasta ${plan.max_weight_kg}kg`} />
-                <Feature text={`${plan.pickups_per_month} recogidas/mes`} />
-                <Feature text={`Lavado ${plan.includes_wash ? 'incluido' : 'no incluido'}`} />
-                <Feature text={`Planchado ${plan.includes_iron ? 'incluido' : 'no incluido'}`} />
-                <Feature text={`Entrega ${plan.delivery_type === 'priority' ? 'prioritaria' : 'estandar'}`} />
-              </View>
-              <TouchableOpacity style={[styles.subButton, plan.is_popular && styles.popularButton]}
-                onPress={() => Alert.alert('Demo', 'Suscripcion simulada a ' + plan.name)}>
-                <Text style={[styles.subButtonText, plan.is_popular && styles.popularButtonText]}>
-                  {subscription?.plan_id === plan.id ? 'Activo' : 'Suscribirse'}
-                </Text>
-              </TouchableOpacity>
-            </View>
+        <View style={s.toggle}>
+          {(['mensual', 'semanal'] as const).map((mode) => (
+            <Pressable
+              key={mode}
+              onPress={() => setBilling(mode)}
+              style={[s.toggleBtn, cycle === mode && s.toggleBtnActive]}
+              accessibilityRole="button"
+              accessibilityLabel={`Ciclo ${mode}`}
+            >
+              <Text style={[s.toggleText, cycle === mode && s.toggleTextActive]}>
+                {mode === 'mensual' ? 'Mensual' : 'Semanal'}
+              </Text>
+            </Pressable>
           ))}
         </View>
+
+        {PLANS.map((plan) => (
+          <View key={plan.id} style={[s.planCard, plan.popular && s.planPopular]}>
+            {plan.popular && (
+              <View style={s.popBadge}>
+                <Crown size={11} color={C.goldInk} strokeWidth={2.6} />
+                <Text style={s.popText}>POPULAR</Text>
+              </View>
+            )}
+            <View style={s.planHead}>
+              <Text style={s.planName}>{plan.name}</Text>
+              <Text style={s.planPrice}>
+                {money(cycle === 'mensual' ? plan.monthly : plan.weekly)}
+                <Text style={s.planPer}>{cycle === 'mensual' ? '/mes' : '/sem'}</Text>
+              </Text>
+            </View>
+            <Text style={s.planDesc}>{plan.desc}</Text>
+
+            <View style={s.feats}>
+              <Feat text={`Hasta ${plan.kg} kg por mes`} />
+              <Feat text={plan.pickups} />
+              <Feat text="Lavar + Planchar incluido" />
+              {plan.extrasOff ? <Feat text={`${plan.extrasOff}% OFF en servicios extra`} /> : null}
+              {plan.support ? <Feat text={plan.support} /> : null}
+            </View>
+
+            <PrimaryButton label="Elegir plan" onPress={() => {}} style={{ marginTop: 6 }} />
+          </View>
+        ))}
+
+        <Text style={s.note}>Cancela cuando quieras. Sin compromisos.</Text>
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
-function Feature({ text }: { text: string }) {
-  return <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}><Text style={{ color: '#18A56A', marginRight: 8 }}>✓</Text><Text style={{ fontSize: 14, color: '#17365D' }}>{text}</Text></View>;
+function Feat({ text }: { text: string }) {
+  return (
+    <View style={s.featRow}>
+      <View style={s.featCheck}>
+        <Check size={11} color={C.good} strokeWidth={3.2} />
+      </View>
+      <Text style={s.featText}>{text}</Text>
+    </View>
+  );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F7FAFC' },
-  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8 },
-  title: { fontSize: 24, fontWeight: '700', color: '#17365D' },
-  subtitle: { fontSize: 14, color: '#718096', marginTop: 4 },
-  activeSub: { paddingHorizontal: 20, marginTop: 16 },
-  activeLabel: { fontSize: 14, fontWeight: '600', color: '#18A56A', marginBottom: 8 },
-  activeCard: { backgroundColor: '#FFF', borderRadius: 14, padding: 16, borderWidth: 2, borderColor: '#18A56A' },
-  activePlan: { fontSize: 18, fontWeight: '700', color: '#17365D' },
-  activeDetail: { fontSize: 14, color: '#718096', marginTop: 4 },
-  progressBar: { height: 6, backgroundColor: '#E4ECF5', borderRadius: 3, marginTop: 10 },
-  progressFill: { height: 6, backgroundColor: '#146BDB', borderRadius: 3 },
-  activeRemaining: { fontSize: 14, fontWeight: '500', color: '#146BDB', marginTop: 8 },
-  cancelButton: { alignSelf: 'flex-start', marginTop: 12 },
-  cancelText: { fontSize: 13, color: '#E53E3E', fontWeight: '500' },
-  plansContainer: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 30 },
-  planCard: { backgroundColor: '#FFF', borderRadius: 14, padding: 20, marginBottom: 14, borderWidth: 1, borderColor: '#E4ECF5' },
-  popularCard: { borderColor: '#146BDB', borderWidth: 2 },
-  popularBadge: { position: 'absolute', top: 12, right: 12, backgroundColor: '#146BDB', borderRadius: 6, paddingHorizontal: 10, paddingVertical: 4 },
-  popularText: { fontSize: 11, fontWeight: '700', color: '#FFF' },
-  planName: { fontSize: 20, fontWeight: '700', color: '#17365D' },
-  planPrice: { fontSize: 32, fontWeight: '700', color: '#146BDB', marginTop: 4 },
-  planPeriod: { fontSize: 14, fontWeight: '400', color: '#718096' },
-  planDesc: { fontSize: 14, color: '#718096', marginTop: 4 },
-  planFeatures: { marginTop: 16 },
-  subButton: { backgroundColor: '#E4ECF5', borderRadius: 10, paddingVertical: 12, alignItems: 'center', marginTop: 16 },
-  subButtonText: { fontSize: 15, fontWeight: '600', color: '#146BDB' },
-  popularButton: { backgroundColor: '#146BDB' },
-  popularButtonText: { color: '#FFF' },
+const s = StyleSheet.create({
+  header: { paddingHorizontal: 20, paddingTop: 18, paddingBottom: 14 },
+  title: { fontFamily: F.dB, fontSize: 22, color: C.navy, letterSpacing: -0.4 },
+  subtitle: { fontFamily: F.bM, fontSize: 13, color: C.muted, marginTop: 3 },
+  toggle: { flexDirection: 'row', marginHorizontal: 20, backgroundColor: '#DFE8F7', borderRadius: 13, padding: 4, marginBottom: 18 },
+  toggleBtn: { flex: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center' },
+  toggleBtnActive: { backgroundColor: C.navy },
+  toggleText: { fontFamily: F.bB, fontSize: 12.5, color: C.muted },
+  toggleTextActive: { color: '#FFFFFF' },
+  planCard: { marginHorizontal: 20, marginBottom: 16, backgroundColor: C.card, borderRadius: 20, borderWidth: 1.5, borderColor: C.line, padding: 19 },
+  planPopular: { borderColor: C.blue, ...shadowCard },
+  popBadge: { position: 'absolute', top: -11, right: 16, flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: C.gold, borderRadius: 20, paddingHorizontal: 11, paddingVertical: 5 },
+  popText: { fontFamily: F.bXb, fontSize: 9, color: C.goldInk, letterSpacing: 0.8 },
+  planHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
+  planName: { fontFamily: F.dB, fontSize: 16, color: C.navy },
+  planPrice: { fontFamily: F.dB, fontSize: 20, color: C.blue, letterSpacing: -0.4 },
+  planPer: { fontFamily: F.bM, fontSize: 10.5, color: C.muted },
+  planDesc: { fontFamily: F.bM, fontSize: 11.5, color: C.muted, marginTop: 4 },
+  feats: { marginTop: 14, marginBottom: 14, gap: 8 },
+  featRow: { flexDirection: 'row', alignItems: 'center', gap: 9 },
+  featCheck: { width: 16, height: 16, borderRadius: 8, backgroundColor: 'rgba(47,191,113,0.12)', alignItems: 'center', justifyContent: 'center' },
+  featText: { fontFamily: F.bSb, fontSize: 12.5, color: C.ink, flex: 1 },
+  note: { textAlign: 'center', fontFamily: F.bM, fontSize: 11.5, color: C.muted, marginTop: 4 },
 });

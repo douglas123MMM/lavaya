@@ -1,37 +1,62 @@
 import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { House, ClipboardList, Crown, UserRound } from 'lucide-react-native';
+import { C, F } from '../../lib/theme';
 
 export default function TabsLayout() {
   return (
-    <Tabs screenOptions={{
-      headerShown: false,
-      tabBarActiveTintColor: '#146BDB',
-      tabBarInactiveTintColor: '#718096',
-      tabBarStyle: {
-        backgroundColor: '#FFFFFF',
-        borderTopColor: '#E4ECF5',
-        paddingBottom: 6,
-        paddingTop: 6,
-        height: 60,
-      },
-      tabBarLabelStyle: { fontSize: 12, fontWeight: '500' },
-    }}>
-      <Tabs.Screen name="index" options={{
-        title: 'Inicio',
-        tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
-      }} />
-      <Tabs.Screen name="orders" options={{
-        title: 'Pedidos',
-        tabBarIcon: ({ color, size }) => <Ionicons name="receipt" size={size} color={color} />,
-      }} />
-      <Tabs.Screen name="plans" options={{
-        title: 'Planes',
-        tabBarIcon: ({ color, size }) => <Ionicons name="star" size={size} color={color} />,
-      }} />
-      <Tabs.Screen name="profile" options={{
-        title: 'Perfil',
-        tabBarIcon: ({ color, size }) => <Ionicons name="person" size={size} color={color} />,
-      }} />
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: C.blue,
+        tabBarInactiveTintColor: '#9AAAC2',
+        tabBarStyle: {
+          backgroundColor: '#FFFFFF',
+          borderTopColor: C.line,
+          borderTopWidth: 1,
+          height: 64,
+          paddingBottom: 8,
+          paddingTop: 6,
+        },
+        tabBarLabelStyle: { fontFamily: F.bB, fontSize: 10.5, letterSpacing: 0.1 },
+        tabBarIconStyle: { marginTop: 2 },
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Inicio',
+          tabBarIcon: ({ color, focused }) => (
+            <House size={22} color={color} strokeWidth={focused ? 2.4 : 2} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="orders"
+        options={{
+          title: 'Pedidos',
+          tabBarIcon: ({ color, focused }) => (
+            <ClipboardList size={22} color={color} strokeWidth={focused ? 2.4 : 2} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="plans"
+        options={{
+          title: 'Planes',
+          tabBarIcon: ({ color, focused }) => (
+            <Crown size={22} color={color} strokeWidth={focused ? 2.4 : 2} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Perfil',
+          tabBarIcon: ({ color, focused }) => (
+            <UserRound size={22} color={color} strokeWidth={focused ? 2.4 : 2} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

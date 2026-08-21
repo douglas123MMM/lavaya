@@ -1,68 +1,95 @@
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import {
+  ClipboardList, Crown, MapPin, CreditCard, Gift, Headphones, Settings, ChevronRight, Plus,
+} from 'lucide-react-native';
+import { Screen } from '../../lib/ui';
+import { C, F, shadowCard } from '../../lib/theme';
 import { DEMO_PROFILE } from '../../lib/demo';
 
-export default function ProfileScreen() {
-  const profile = DEMO_PROFILE;
+const initials = (name: string) =>
+  name.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase();
 
-  const menuItems = [
-    { icon: 'person-outline', label: 'Mi perfil', onPress: () => router.push('/profile/edit') },
-    { icon: 'location-outline', label: 'Mis direcciones', onPress: () => router.push('/profile/addresses') },
-    { icon: 'card-outline', label: 'Metodos de pago', onPress: () => Alert.alert('Demo', 'Metodos de pago') },
-    { icon: 'notifications-outline', label: 'Notificaciones', onPress: () => Alert.alert('Demo', 'Notificaciones') },
-    { icon: 'help-circle-outline', label: 'Ayuda y soporte', onPress: () => router.push('/support') },
+export default function ProfileScreen() {
+  const menu = [
+    { icon: ClipboardList, label: 'Mis pedidos', action: () => router.push('/(tabs)/orders') },
+    { icon: Crown, label: 'Mis planes', tag: 'Estandar', action: () => router.push('/(tabs)/plans') },
+    { icon: MapPin, label: 'Direcciones', action: () => router.push('/profile/addresses') },
+    { icon: CreditCard, label: 'Metodos de pago', action: () => {} },
+    { icon: Gift, label: 'Invitar y ganar', tag: 'Descuentos', action: () => {} },
+    { icon: Headphones, label: 'Ayuda y soporte', action: () => router.push('/support') },
+    { icon: Settings, label: 'Configuracion', action: () => router.push('/profile/edit') },
   ];
 
-  const handleLogout = () => Alert.alert('Demo', 'Sesion cerrada (demo)');
-
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <View style={styles.header}><Text style={styles.title}>Perfil</Text></View>
-        <View style={styles.profileCard}>
-          <View style={styles.avatar}><Text style={styles.avatarText}>{profile.full_name.charAt(0).toUpperCase()}</Text></View>
-          <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>{profile.full_name}</Text>
-            <Text style={styles.profileEmail}>{profile.email}</Text>
+    <Screen>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 28 }}>
+        <LinearGradient
+          colors={[C.navy, C.navySoft]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={s.profileCard}
+        >
+          <View style={s.profileTop}>
+            <View style={s.avatar}>
+              <Text style={s.avatarText}>{initials(DEMO_PROFILE.full_name)}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={s.name}>{DEMO_PROFILE.full_name}</Text>
+              <Text style={s.email}>{DEMO_PROFILE.email}</Text>
+            </View>
           </View>
-        </View>
-        <View style={styles.menuSection}>
-          {menuItems.map((item, i) => (
-            <TouchableOpacity key={i} style={styles.menuItem} onPress={item.onPress}>
-              <Ionicons name={item.icon as any} size={22} color="#146BDB" />
-              <Text style={styles.menuLabel}>{item.label}</Text>
-              <Ionicons name="chevron-forward" size={18} color="#A0AEC0" />
-            </TouchableOpacity>
+          <View style={s.balanceRow}>
+            <View>
+              <Text style={s.balanceLabel}>Mi saldo</Text>
+              <Text style={s.balanceAmt}>$15.00</Text>
+            </View>
+            <Pressable style={s.topUpBtn} accessibilityRole="button" accessibilityLabel="Recargar saldo">
+              <Plus size={14} color={C.navy} strokeWidth={2.8} />
+              <Text style={s.topUpText}>Recargar</Text>
+            </Pressable>
+          </View>
+        </LinearGradient>
+
+        <View style={s.menu}>
+          {menu.map((item) => (
+            <Pressable
+              key={item.label}
+              style={({ pressed }) => [s.menuRow, pressed && { opacity: 0.6 }]}
+              onPress={item.action}
+              accessibilityRole="button"
+              accessibilityLabel={item.label}
+            >
+              <View style={s.menuIcon}>
+                <item.icon size={16} color={C.blue} strokeWidth={2.1} />
+              </View>
+              <Text style={s.menuLabel}>{item.label}</Text>
+              {item.tag ? <Text style={s.menuTag}>{item.tag}</Text> : null}
+              <ChevronRight size={16} color="#9AAAC2" strokeWidth={2.2} />
+            </Pressable>
           ))}
         </View>
-        <View style={styles.menuSection}>
-          <TouchableOpacity style={styles.menuItem}><Ionicons name="document-text-outline" size={22} color="#718096" /><Text style={styles.menuLabel}>Terminos y condiciones</Text><Ionicons name="chevron-forward" size={18} color="#A0AEC0" /></TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}><Ionicons name="shield-outline" size={22} color="#718096" /><Text style={styles.menuLabel}>Privacidad</Text><Ionicons name="chevron-forward" size={18} color="#A0AEC0" /></TouchableOpacity>
-        </View>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={20} color="#E53E3E" />
-          <Text style={styles.logoutText}>Cerrar sesion</Text>
-        </TouchableOpacity>
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F7FAFC' },
-  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12 },
-  title: { fontSize: 24, fontWeight: '700', color: '#17365D' },
-  profileCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', marginHorizontal: 20, borderRadius: 14, padding: 16, borderWidth: 1, borderColor: '#E4ECF5' },
-  avatar: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#146BDB', justifyContent: 'center', alignItems: 'center' },
-  avatarText: { fontSize: 22, fontWeight: '700', color: '#FFF' },
-  profileInfo: { marginLeft: 14, flex: 1 },
-  profileName: { fontSize: 18, fontWeight: '600', color: '#17365D' },
-  profileEmail: { fontSize: 14, color: '#718096', marginTop: 2 },
-  menuSection: { backgroundColor: '#FFF', marginHorizontal: 20, marginTop: 16, borderRadius: 14, borderWidth: 1, borderColor: '#E4ECF5', overflow: 'hidden' },
-  menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: '#F7FAFC' },
-  menuLabel: { flex: 1, marginLeft: 12, fontSize: 15, color: '#17365D' },
-  logoutButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginHorizontal: 20, marginTop: 24, marginBottom: 30, paddingVertical: 14, backgroundColor: '#FFF', borderRadius: 12, borderWidth: 1, borderColor: '#FED7D7' },
-  logoutText: { marginLeft: 8, fontSize: 15, fontWeight: '600', color: '#E53E3E' },
+const s = StyleSheet.create({
+  profileCard: { marginHorizontal: 20, marginTop: 16, borderRadius: 22, padding: 20, ...shadowCard },
+  profileTop: { flexDirection: 'row', alignItems: 'center', gap: 13 },
+  avatar: { width: 52, height: 52, borderRadius: 26, backgroundColor: '#C9DCFF', borderWidth: 2, borderColor: 'rgba(255,255,255,0.4)', alignItems: 'center', justifyContent: 'center' },
+  avatarText: { fontFamily: F.dB, fontSize: 17, color: C.navy },
+  name: { fontFamily: F.bB, fontSize: 15.5, color: '#FFFFFF' },
+  email: { fontFamily: F.bM, fontSize: 11.5, color: 'rgba(255,255,255,0.7)', marginTop: 2 },
+  balanceRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 18, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 14, padding: 14 },
+  balanceLabel: { fontFamily: F.bSb, fontSize: 10.5, color: 'rgba(255,255,255,0.75)' },
+  balanceAmt: { fontFamily: F.dB, fontSize: 18, color: '#FFFFFF', marginTop: 2, letterSpacing: -0.3 },
+  topUpBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#FFFFFF', borderRadius: 10, paddingVertical: 9, paddingHorizontal: 14 },
+  topUpText: { fontFamily: F.bB, fontSize: 12, color: C.navy },
+  menu: { marginTop: 20, marginHorizontal: 20, backgroundColor: C.card, borderRadius: 18, borderWidth: 1, borderColor: C.line, paddingHorizontal: 16 },
+  menuRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: C.line },
+  menuIcon: { width: 34, height: 34, borderRadius: 10, backgroundColor: C.blueSoft, alignItems: 'center', justifyContent: 'center' },
+  menuLabel: { flex: 1, fontFamily: F.bSb, fontSize: 13.5, color: C.ink },
+  menuTag: { fontFamily: F.bB, fontSize: 10.5, color: C.blue, backgroundColor: C.blueSoft, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3, marginRight: 6 },
 });

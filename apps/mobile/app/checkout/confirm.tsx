@@ -1,75 +1,114 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, ScrollView, StyleSheet, Alert } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { DEMO_SERVICES } from '../../lib/demo';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ShieldCheck, Clock3, MapPin, WashingMachine } from 'lucide-react-native';
+import { Screen, ScreenHeader, PrimaryButton } from '../../lib/ui';
+import { C, F, shadowCard } from '../../lib/theme';
+import { SERVICES, DELIVERY_FEE, money } from '../../lib/catalog';
 
 export default function ConfirmScreen() {
   const params = useLocalSearchParams<{ serviceId: string; weight: string; addressId: string; pickupDate: string; timeStart: string; timeEnd: string; deliveryType: string }>();
   const [loading, setLoading] = useState(false);
 
-  const service = DEMO_SERVICES.find((s) => s.id === params.serviceId) || DEMO_SERVICES[2];
+  const service = SERVICES.find((s) => s.id === params.serviceId) || SERVICES[2];
   const weight = parseFloat(params.weight || '5');
-  const deliveryFee = params.deliveryType === 'priority' ? 5.0 : 3.0;
-  const subtotal = weight * service.base_price;
-  const total = subtotal + deliveryFee;
+  const fee = params.deliveryType === 'priority' ? DELIVERY_FEE.priority : DELIVERY_FEE.standard;
+  const subtotal = weight * service.pricePerKg;
+  const total = subtotal + fee;
 
   const handleConfirm = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      Alert.alert('Pedido creado', 'Tu pedido ha sido registrado (demo). Te notificaremos cuando sea asignado.', [
+      Alert.alert('Pedido creado', 'Tu pedido fue registrado. Te avisaremos cuando sea asignado.', [
         { text: 'OK', onPress: () => router.replace('/(tabs)') },
       ]);
-    }, 1200);
+    }, 1000);
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backText}>← Volver</Text>
-        </TouchableOpacity>
-        <Text style={styles.step}>Paso 4 de 4</Text>
-        <Text style={styles.title}>Confirmar pedido</Text>
+    <Screen>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 30 }}>
+        <ScreenHeader title="Confirmar pedido" sub="Paso 4 de 4 · Revisa y confirma" onBack={() => router.back()} />
 
-        <View style={styles.summaryCard}>
-          <Row label="Servicio" value={service.name} />
-          <Row label="Peso estimado" value={`${weight} kg`} />
-          <Row label="Fecha" value={params.pickupDate || 'Hoy'} />
-          <Row label="Horario" value={`${params.timeStart || '14:00'} - ${params.timeEnd || '16:00'}`} />
-          <Row label="Entrega" value={params.deliveryType === 'priority' ? 'Prioritaria' : 'Estandar'} />
-          <View style={styles.divider} />
-          <Row label={`Servicio (${weight}kg x $${service.base_price})`} value={`$${subtotal.toFixed(2)}`} />
-          <Row label="Delivery" value={`$${deliveryFee.toFixed(2)}`} />
-          <View style={styles.divider} />
-          <Row label="Total" value={`$${total.toFixed(2)}`} bold />
+        <LinearGradient
+          colors={[C.blue, '#4D8BF5']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={s.banner}
+        >
+          <View style={{ flex: 1 }}>
+            <Text style={s.bannerTitle}>{service.name}</Text>
+            <Text style={s.bannerSub}>Retiro {params.pickupDate || 'hoy'} · {params.timeStart || '14:00'} a {params.timeEnd || '16:00'}</Text>
+          </View>
+          <WashingMachine size={46} color="rgba(255,255,255,0.28)" strokeWidth={1.6} />
+        </LinearGradient>
+
+        <View style={s.card}>
+          <Row icon={MapPin} label="Retiro y entrega" value="Av. Bolivar, San Juan de los Morros" />
+          <Row icon={Clock3} label="Entrega estimada" value="En 48 horas posteriores al retiro" />
+          <Row icon={ShieldCheck} label="Incluye" value="Retiro a domicilio y entrega segura" />
         </View>
 
-        <Text style={styles.disclaimer}>* Precio estimado. El total final se confirmara despues de pesar tu ropa.</Text>
+        <View style={s.card}>
+          <Text style={s.sumTitle}>Resumen de pago</Text>
+          <View style={s.sumRow}>
+            <Text style={s.sumLbl}>{service.name} · {weight} kg</Text>
+            <Text style={s.sumVal}>{money(subtotal)}</Text>
+          </View>
+          <View style={s.sumRow}>
+            <Text style={s.sumLbl}>Retiro y entrega</Text>
+            <Text style={s.sumVal}>{money(fee)}</Text>
+          </View>
+          <View style={s.totalRow}>
+            <Text style={s.totalLbl}>Total estimado</Text>
+            <Text style={s.totalVal}>{money(total)}</Text>
+          </View>
+        </View>
 
-        <TouchableOpacity style={[styles.button, loading && { opacity: 0.7 }]} onPress={handleConfirm} disabled={loading}>
-          <Text style={styles.buttonText}>{loading ? 'Creando...' : `Confirmar pedido - $${total.toFixed(2)}`}</Text>
-        </TouchableOpacity>
+        <View style={{ marginTop: 24 }}>
+          <PrimaryButton
+            label={loading ? 'Creando...' : `Confirmar · ${money(total)}`}
+            onPress={handleConfirm}
+            disabled={loading}
+          />
+        </View>
+        <Text style={s.note}>El peso final se verifica al recibir tu ropa. Sin sorpresas.</Text>
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
-function Row({ label, value, bold }: { label: string; value: string; bold?: boolean }) {
-  return <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8 }}><Text style={{ fontSize: 15, color: '#4A5568' }}>{label}</Text><Text style={{ fontSize: 15, fontWeight: bold ? '700' : '500', color: bold ? '#146BDB' : '#17365D' }}>{value}</Text></View>;
+function Row({ icon: Icon, label, value }: { icon: typeof MapPin; label: string; value: string }) {
+  return (
+    <View style={s.infoRow}>
+      <View style={s.infoIcon}>
+        <Icon size={15} color={C.blue} strokeWidth={2.2} />
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text style={s.infoLbl}>{label}</Text>
+        <Text style={s.infoVal}>{value}</Text>
+      </View>
+    </View>
+  );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F7FAFC' },
-  content: { padding: 20, paddingBottom: 40 },
-  backButton: { alignSelf: 'flex-start', marginBottom: 8 },
-  backText: { fontSize: 15, color: '#146BDB', fontWeight: '500' },
-  step: { fontSize: 13, color: '#718096', fontWeight: '500' },
-  title: { fontSize: 24, fontWeight: '700', color: '#17365D', marginTop: 4, marginBottom: 20 },
-  summaryCard: { backgroundColor: '#FFF', borderRadius: 14, padding: 20, borderWidth: 1, borderColor: '#E4ECF5' },
-  divider: { height: 1, backgroundColor: '#E4ECF5', marginVertical: 8 },
-  disclaimer: { fontSize: 13, color: '#A0AEC0', marginTop: 10, fontStyle: 'italic' },
-  button: { backgroundColor: '#146BDB', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: 24 },
-  buttonText: { color: '#FFF', fontSize: 16, fontWeight: '600' },
+const s = StyleSheet.create({
+  banner: { flexDirection: 'row', alignItems: 'center', marginHorizontal: 20, borderRadius: 20, padding: 19, gap: 12, ...shadowCard },
+  bannerTitle: { fontFamily: F.dB, fontSize: 17, color: '#FFFFFF', letterSpacing: -0.2 },
+  bannerSub: { fontFamily: F.bM, fontSize: 11.5, color: 'rgba(255,255,255,0.85)', marginTop: 4 },
+  card: { marginTop: 14, marginHorizontal: 20, backgroundColor: C.card, borderRadius: 18, borderWidth: 1, borderColor: C.line, padding: 17 },
+  infoRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 8 },
+  infoIcon: { width: 32, height: 32, borderRadius: 10, backgroundColor: C.blueSoft, alignItems: 'center', justifyContent: 'center' },
+  infoLbl: { fontFamily: F.bM, fontSize: 11, color: C.muted },
+  infoVal: { fontFamily: F.bSb, fontSize: 12.5, color: C.ink, marginTop: 2 },
+  sumTitle: { fontFamily: F.dSb, fontSize: 13, color: C.navy, marginBottom: 12 },
+  sumRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
+  sumLbl: { fontFamily: F.bM, fontSize: 12.5, color: C.muted },
+  sumVal: { fontFamily: F.bB, fontSize: 12.5, color: C.ink },
+  totalRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 4, paddingTop: 13, borderTopWidth: 1.5, borderTopColor: C.line, borderStyle: 'dashed' as never },
+  totalLbl: { fontFamily: F.bB, fontSize: 13.5, color: C.navy },
+  totalVal: { fontFamily: F.dB, fontSize: 19, color: C.blue, letterSpacing: -0.3 },
+  note: { textAlign: 'center', fontFamily: F.bM, fontSize: 11, color: C.muted, marginTop: 12, paddingHorizontal: 24 },
 });

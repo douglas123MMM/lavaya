@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../lib/supabase';
 
 const CATEGORIES = ['Mi pedido', 'Pago', 'Recogida', 'Entrega', 'Ropa danada', 'Ropa faltante', 'Suscripcion', 'Otro'];
 

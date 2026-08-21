@@ -1,47 +1,70 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
+import { ChevronRight, PackageOpen } from 'lucide-react-native';
+import { Screen, ScreenHeader } from '../../lib/ui';
+import { C, F } from '../../lib/theme';
 import { DEMO_ORDERS } from '../../lib/demo';
+import { STATUS_LABEL, STATUS_FLOW, money } from '../../lib/catalog';
 
-const STATUS_LABEL: Record<string, string> = { pending: 'Solicitud recibida', pickup_assigned: 'Repartidor asignado', en_route_pickup: 'En camino a recoger', picked_up: 'Ropa recogida', received_laundry: 'Recibida', washing: 'Lavando', drying: 'Secando', ironing: 'Planchando', ready: 'Lista', en_route_delivery: 'En camino', delivered: 'Entregada', cancelled: 'Cancelado' };
-const STATUS_COLOR: Record<string, string> = { pending: '#D69E2E', pickup_assigned: '#3182CE', en_route_pickup: '#3182CE', picked_up: '#3182CE', received_laundry: '#805AD5', washing: '#805AD5', drying: '#805AD5', ironing: '#805AD5', ready: '#18A56A', en_route_delivery: '#18A56A', delivered: '#18A56A', cancelled: '#E53E3E' };
+const progressOf = (status: string) => {
+  if (status === 'cancelled') return 0;
+  const idx = STATUS_FLOW.indexOf(status as (typeof STATUS_FLOW)[number]);
+  return ((idx + 1) / STATUS_FLOW.length) * 100;
+};
 
 export default function OrdersScreen() {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}><Text style={styles.title}>Mis pedidos</Text></View>
-      <FlatList data={DEMO_ORDERS} keyExtractor={(item) => item.id} contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} onPress={() => router.push(`/tracking/${item.id}`)}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.orderNumber}>Pedido #{item.order_number}</Text>
-              <View style={[styles.badge, { backgroundColor: STATUS_COLOR[item.status] || '#718096' }]}>
-                <Text style={styles.badgeText}>{STATUS_LABEL[item.status]}</Text>
+    <Screen>
+      <ScreenHeader title="Mis pedidos" sub={`${DEMO_ORDERS.length} pedidos`} />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 28 }}>
+        {DEMO_ORDERS.map((order) => {
+          const pct = progressOf(order.status);
+          return (
+            <Pressable
+              key={order.id}
+              style={({ pressed }) => [s.card, pressed && { transform: [{ scale: 0.99 }] }]}
+              onPress={() => router.push(`/tracking/${order.id}`)}
+              accessibilityRole="button"
+              accessibilityLabel={`Pedido ${order.order_number}`}
+            >
+              <View style={s.top}>
+                <Text style={s.number}>#{order.order_number}</Text>
+                <Text style={s.date}>
+                  {new Date(order.created_at).toLocaleDateString('es-VE', { day: 'numeric', month: 'short' })}
+                </Text>
               </View>
-            </View>
-            <View style={styles.cardBody}>
-              <Text style={styles.cardDetail}>Peso est: {item.estimated_weight}kg</Text>
-              <Text style={styles.cardDetail}>Total: ${item.total.toFixed(2)}</Text>
-            </View>
-            <Text style={styles.cardDate}>{new Date(item.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</Text>
-          </TouchableOpacity>
+              <Text style={s.status}>{STATUS_LABEL[order.status] || order.status}</Text>
+              <View style={s.progressTrack}>
+                <View style={[s.progressFill, { width: `${pct}%` }, order.status === 'cancelled' && { backgroundColor: '#E53E3E' }]} />
+              </View>
+              <View style={s.bottom}>
+                <Text style={s.total}>{money(order.total)} · {order.estimated_weight} kg</Text>
+                <ChevronRight size={17} color={C.blue} strokeWidth={2.4} />
+              </View>
+            </Pressable>
+          );
+        })}
+        {DEMO_ORDERS.length === 0 && (
+          <View style={s.empty}>
+            <PackageOpen size={34} color={C.muted} strokeWidth={1.8} />
+            <Text style={s.emptyText}>Aun no tienes pedidos</Text>
+          </View>
         )}
-      />
-    </SafeAreaView>
+      </ScrollView>
+    </Screen>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F7FAFC' },
-  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12 },
-  title: { fontSize: 24, fontWeight: '700', color: '#17365D' },
-  list: { paddingHorizontal: 20, paddingBottom: 20 },
-  card: { backgroundColor: '#FFFFFF', borderRadius: 14, padding: 16, marginBottom: 10, borderWidth: 1, borderColor: '#E4ECF5' },
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  orderNumber: { fontSize: 15, fontWeight: '600', color: '#17365D' },
-  badge: { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4 },
-  badgeText: { fontSize: 12, fontWeight: '600', color: '#FFFFFF' },
-  cardBody: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 },
-  cardDetail: { fontSize: 14, color: '#718096' },
-  cardDate: { fontSize: 12, color: '#A0AEC0', marginTop: 8 },
+const s = StyleSheet.create({
+  card: { backgroundColor: C.card, borderRadius: 18, borderWidth: 1, borderColor: C.line, padding: 17, marginBottom: 12 },
+  top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  number: { fontFamily: F.dSb, fontSize: 14, color: C.navy },
+  date: { fontFamily: F.bM, fontSize: 11.5, color: C.muted },
+  status: { fontFamily: F.bB, fontSize: 12, color: C.blue, marginTop: 4 },
+  progressTrack: { height: 5, backgroundColor: C.line, borderRadius: 3, marginTop: 12, overflow: 'hidden' },
+  progressFill: { height: 5, backgroundColor: C.good, borderRadius: 3 },
+  bottom: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 },
+  total: { fontFamily: F.bB, fontSize: 13, color: C.ink },
+  empty: { alignItems: 'center', marginTop: 80, gap: 12 },
+  emptyText: { fontFamily: F.bSb, fontSize: 13.5, color: C.muted },
 });
