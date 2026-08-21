@@ -1,12 +1,24 @@
 import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Alert, ActivityIndicator } from 'react-native';
 import { Link, router } from 'expo-router';
+import * as LocalAuthentication from 'expo-local-authentication';
 import { supabase } from '../../lib/supabase';
+import { useBiometricLogin } from '../../lib/useBiometricLogin';
+import { getAprobacion } from '../../lib/aprobacion';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [bioLoading, setBioLoading] = useState(false);
+  const { attempt } = useBiometricLogin();
+
+  // Redirigir según estatus de aprobación:
+  // aprobado => home, cualquier otro => pantalla de aprobación.
+  const goHomeOrAprobacion = async () => {
+    const r = await getAprobacion();
+    router.replace((r.estatus === 'aprobado' ? '/(tabs)' : '/aprobacion') as never);
+  };
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -21,7 +33,33 @@ export default function LoginScreen() {
         ? 'Correo o contrasena incorrectos'
         : 'No pudimos iniciar sesion. Intenta nuevamente.');
     } else {
-      router.replace('/(tabs)');
+      await goHomeOrAprobacion();
+    }
+  };
+
+  // Botón de huella: si hay sesión guardada, autentica y redirige.
+  const handleBiometric = async () => {
+    setBioLoading(true);
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) {
+      setBioLoading(false);
+      Alert.alert('Sin sesión', 'Primero inicia sesión con tu correo y contraseña.');
+      return;
+    }
+    try {
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: 'Desbloquear LavaYa',
+        fallbackLabel: 'Usar contraseña',
+      });
+      if (result.success) {
+        await goHomeOrAprobacion();
+      } else {
+        Alert.alert('Acceso denegado', 'No se pudo verificar tu huella.');
+      }
+    } catch {
+      attempt().catch(() => {});
+    } finally {
+      setBioLoading(false);
     }
   };
 
@@ -72,6 +110,18 @@ export default function LoginScreen() {
             )}
           </TouchableOpacity>
 
+          <TouchableOpacity
+            style={[styles.bioButton, bioLoading && styles.buttonDisabled]}
+            onPress={handleBiometric}
+            disabled={bioLoading}
+          >
+            {bioLoading ? (
+              <ActivityIndicator color="#146BDB" />
+            ) : (
+              <Text style={styles.bioText}> Ingresar con huella</Text>
+            )}
+          </TouchableOpacity>
+
           <Link href="/(auth)/register" style={styles.link}>
             <Text style={styles.linkText}>No tienes cuenta? <Text style={styles.linkBold}>Registrate</Text></Text>
           </Link>
@@ -96,6 +146,8 @@ const styles = StyleSheet.create({
   button: { backgroundColor: '#146BDB', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: 8 },
   buttonDisabled: { opacity: 0.7 },
   buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
+  bioButton: { borderWidth: 1, borderColor: '#146BDB', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: 12 },
+  bioText: { color: '#146BDB', fontSize: 16, fontWeight: '600' },
   link: { alignSelf: 'center', marginTop: 20 },
   linkText: { fontSize: 14, color: '#718096' },
   linkBold: { color: '#146BDB', fontWeight: '600' },

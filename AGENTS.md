@@ -61,8 +61,38 @@ python "C:\Users\Optiplex 3020 i5-4ta\.agents\skills\ui-ux-pro-max\scripts\searc
 - Planes: Estudiantil Bs15/15 prendas, Hogar Bs35/30, Familiar Bs60/60, Premium Bs90/100
 - Todos los planes incluyen: planchado + delivery ida y vuelta
 
-### Pendiente por hacer
-- Conectar Supabase real (configurar .env.local con URL + anon key)
+### Estado Supabase REAL verificado (20 ago 2026)
+- **Proyecto**: `henmnuckpbjywlzhawwg` ("douglas123MMM's Project", org `iftslrtqpgukthxchobz`)
+- **URL**: `https://henmnuckpbjywlzhawwg.supabase.co`
+- **Anon key**: `sb_publishable_9SPDgOmtVfmCH0dP2d6tOA_kC0JerEu`
+- **Pooler**: `postgresql://postgres.henmnuckpbjywlzhawwg@aws-0-us-east-1.pooler.supabase.com:5432/postgres`
+- **Las 4 apps (.env.local) YA apuntan a este proyecto** (admin/laundry usan NEXT_PUBLIC_, mobile/driver usan EXPO_PUBLIC_)
+- **INFRA**: Supabase v17.6.1, Postgres 17.6.1, CLI ligado (`.temp/project-ref`, `linked-project.json`, `pooler-url`)
+
+### Schema REAL de produccion (DIFIERE del local 001_initial_schema.sql - usa nombres en espanol)
+- **orders**: id (TEXT), user_id, address_id, servicio, servicio_tipo, peso_estimado, fecha_retiro, hora_retiro, subtotal, descuento, costo_total, costo_delivery, comision, status, notas, worker_id, created_at, updated_at, ticket, pickup_lat, pickup_lng, delivery_lat, delivery_lng, payment_submitted_at, assigned_at
+- **plans**: id (TEXT), nombre, descripcion, precio, kg_limite, retiros_mes, descuento_extra, atencion_prioritaria, delivery_incluido, activo, created_at, updated_at
+- **addresses**: id, user_id (TEXT), direccion, referencia, lat, lng, tipo, es_principal, created_at
+- **services**: existe, vacia (0 filas)
+- **subscriptions**: existe, vacia (0 filas)
+- **payments**: existe, vacia (0 filas)
+- **IMPORTANTE**: orders.id y plans.id son **TEXT**, no UUID. Los IDs simplificados (cadena) en vez de uuid.
+- **APLICADO (20 ago 2026)**: `002_schema_es_faltantes.sql` creado y pusheado OK (`supabase db push --linked`) con: profiles (UUID a auth.users), coupons, order_items, service_addons, coupon_redemptions, reviews, order_events, driver_locations, notifications, incidents, support_tickets, business_accounts. Las tablas auxiliares usan `order_id TEXT`/`user_id TEXT` (compatibles con orders.id/addresses.user_id TEXT). FKs de BD a orders omitidas (incompatibilidad de tipos resuelta con TEXT).
+- **APLICADO (20 ago 2026)**: `003_fix_rls_recursion.sql` CORRIGE recursion RLS (HTTP 500). Funciones `is_admin()`, `is_staff()`, `is_laundry_admin()` (SECURITY DEFINER) + reescritura de politicas. Push OK, verificado: **las 12 tablas nuevas responden 200 OK con key anon**.
+- **Proxima sesson**: obtener password de la base (Settings > Database) para `supabase db push` sin confirmacion y para SQL directo via node-pg, y verificar inserccion desde las apps con el service_role key.
+
+### Datos reales existentes
+- **orders**: 1 pedido (LAVAR 5kg, subtotal 10, costo_total 15, delivery 5, comision 1.5, status PENDIENTE, fecha_retiro 2026-08-20, notas "Prueba")
+- **plans**: 1 plan ("Basico", precio 15, kg_limite 7, retiros_mes 1, delivery_incluido true, activo)
+- **addresses**: 1 direccion
+
+### Pendiente por hacer (conectado y configurado)
+- [x] Conectar Supabase real - las 4 apps YA apuntan al proyecto hen...wg
+- [x] Aplicar tablas faltantes (profiles, coupons, order_items, order_events, service_addons, reviews, coupon_redemptions, driver_locations, notifications, incidents, support_tickets, business_accounts) RESPETANDO schema real en espanol
+- [x] Corregir recursion RLS (003_fix_rls_recursion.sql) - verificado 200 OK en las 12 tablas con anon key
+- [ ] Docker NO instalado + psql NO instalado: para `supabase db push`/`db dump` se necesita Docker Desktop o instalar `pg` (node) y usar password de la DB desde el dashboard
+- [ ] Password de la base (dashboard Settings > Database) pendiente para conexion SQL directa via node-pg y para `db push` sin confirmacion
+- [ ] Migracion local 001_initial_schema.sql (ingles, customer_id/service_id) NO coincide con schema real (espanol, user_id/servicio) - adaptar antes de usar
 - Probar app cliente en dispositivo via Expo Go
 - Testear RLS y Edge Functions
 - Mejorar UI con el script ui-ux-pro-max (buscar glassmorphism, paletas SaaS, tipografia elegante)
@@ -70,6 +100,13 @@ python "C:\Users\Optiplex 3020 i5-4ta\.agents\skills\ui-ux-pro-max\scripts\searc
 - Implementar pagos Stripe reales
 - Firebase/Expo Notifications para push
 - Google Maps/Mapbox para tracking de repartidores
+
+### Reglas anti-bucle (para el agente, 20 ago 2026)
+- Trabajar de a UN solo paso: 1 herramienta por turno y esperar el resultado.
+- Máximo 2 reintentos por error técnico corregible (sintaxis/tipos). Si falla 2 veces: preguntar al usuario o documentar como pendiente, NO insistir.
+- Nunca escribir párrafos de "analisis" o texto repetitivo sin usar herramienta. Cada mensaje = 1 acción (tool) o 1 pregunta concreta.
+- Si el entorno no expone una credencial/permiso (ej. password DB): no adivinar; preguntar con opciones via ask_followup_question y seguir solo cuando responda.
+- Verificar siempre el resultado real del comando antes de continuar (no asumir exito).
 
 ### Comando para retomar
 Abrir terminal en la carpeta del proyecto y ejecutar:

@@ -36,7 +36,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside style={{ width: 240, background: '#17365D', color: '#FFF', padding: '20px 0', display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '0 20px 20px', borderBottom: '1px solid rgba(255,255,255,0.1)', marginBottom: 12 }}>
           <h2 style={{ fontSize: 20, fontWeight: 700 }}>🧺 LavaYa Admin</h2>
-          <p style={{ fontSize: 13, opacity: 0.7, marginTop: 4 }}>{profile?.full_name}</p>
+          <p style={{ fontSize: 13, opacity: 0.7, marginTop: 4 }}>{profile?.nombre}</p>
         </div>
         <nav style={{ flex: 1 }}>
           {NAV_ITEMS.map((item) => (

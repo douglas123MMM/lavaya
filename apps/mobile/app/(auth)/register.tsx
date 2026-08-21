@@ -8,11 +8,13 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [phone, setPhone] = useState('');
+  const [cedula, setCedula] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    if (!fullName || !email || !password) {
-      Alert.alert('Error', 'Completa todos los campos');
+    if (!fullName || !email || !password || !phone || !cedula) {
+      Alert.alert('Error', 'Completa todos los campos (nombre, correo, cedula y telefono)');
       return;
     }
     if (password !== confirmPassword) {
@@ -29,7 +31,12 @@ export default function RegisterScreen() {
       email: email.trim(),
       password,
       options: {
-        data: { full_name: fullName.trim(), role: 'customer' },
+        data: {
+          full_name: fullName.trim(),
+          phone: phone.trim(),
+          cedula: cedula.trim(),
+          role: 'customer',
+        },
       },
     });
     setLoading(false);
@@ -39,9 +46,11 @@ export default function RegisterScreen() {
         ? 'Este correo ya esta registrado'
         : 'No pudimos crear tu cuenta. Intenta nuevamente.');
     } else {
-      Alert.alert('Cuenta creada', 'Revisa tu correo para confirmar tu cuenta.', [
-        { text: 'OK', onPress: () => router.replace('/(auth)/login') },
-      ]);
+      Alert.alert(
+        'Cuenta creada',
+        'Tu cuenta esta pendiente de aprobacion por el administrador. Te notificaremos cuando sea verificada.',
+        [{ text: 'OK', onPress: () => router.replace('/(auth)/login') }]
+      );
     }
   };
 
@@ -64,6 +73,16 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputGroup}>
+              <Text style={styles.label}>Cedula de identidad</Text>
+              <TextInput style={styles.input} placeholder="V-12345678" value={cedula} onChangeText={setCedula} keyboardType="number-pad" />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Telefono</Text>
+              <TextInput style={styles.input} placeholder="0412-1234567" value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+            </View>
+
+            <View style={styles.inputGroup}>
               <Text style={styles.label}>Correo electronico</Text>
               <TextInput style={styles.input} placeholder="tu@correo.com" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
             </View>
@@ -76,6 +95,12 @@ export default function RegisterScreen() {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Confirmar contrasena</Text>
               <TextInput style={styles.input} placeholder="Repite tu contrasena" value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
+            </View>
+
+            <View style={styles.notice}>
+              <Text style={styles.noticeText}>
+                Al registrarte, tu cuenta quedara en revision. El administrador la aprobara tras verificar tus datos antes de que puedas hacer pedidos.
+              </Text>
             </View>
 
             <TouchableOpacity style={[styles.button, loading && styles.buttonDisabled]} onPress={handleRegister} disabled={loading}>
@@ -96,7 +121,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F7FAFC' },
   scroll: { flexGrow: 1, justifyContent: 'center' },
   content: { flex: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 40 },
-  logoContainer: { alignItems: 'center', marginBottom: 32 },
+  logoContainer: { alignItems: 'center', marginBottom: 24 },
   logo: { fontSize: 48, marginBottom: 8 },
   brand: { fontSize: 32, fontWeight: '700', color: '#146BDB', letterSpacing: -1 },
   tagline: { fontSize: 14, color: '#718096', marginTop: 4 },
@@ -105,6 +130,8 @@ const styles = StyleSheet.create({
   inputGroup: { marginBottom: 16 },
   label: { fontSize: 14, fontWeight: '500', color: '#17365D', marginBottom: 6 },
   input: { backgroundColor: '#F7FAFC', borderWidth: 1, borderColor: '#E4ECF5', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 12, fontSize: 16, color: '#17365D' },
+  notice: { backgroundColor: '#FFF8E1', borderRadius: 10, padding: 12, marginBottom: 12, borderWidth: 1, borderColor: '#F3D98B' },
+  noticeText: { fontSize: 13, color: '#7A6200', lineHeight: 18 },
   button: { backgroundColor: '#146BDB', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: 8 },
   buttonDisabled: { opacity: 0.7 },
   buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },

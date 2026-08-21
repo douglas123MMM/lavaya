@@ -15,8 +15,8 @@ export default function EditProfileScreen() {
       if (user) {
         const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
         if (data) {
-          setFullName(data.full_name || '');
-          setPhone(data.phone || '');
+          setFullName(data.nombre || '');
+          setPhone(data.telefono || '');
         }
       }
       setLoading(false);
@@ -26,7 +26,7 @@ export default function EditProfileScreen() {
   const handleSave = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    const { error } = await supabase.from('profiles').update({ full_name: fullName, phone }).eq('id', user.id);
+    const { error } = await supabase.from('profiles').update({ nombre: fullName, telefono: phone }).eq('id', user.id);
     if (error) {
       Alert.alert('Error', 'No se pudieron guardar los cambios');
     } else {
