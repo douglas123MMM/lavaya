@@ -6,29 +6,29 @@
 <title>LavaYa — Tu tiempo vale más</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<meta name="theme-color" content="#0B5BD3">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#2563EB">
 <style>
 :root{
-  --primary:#0B5BD3; --primary-2:#4C8DFF; --dark:#0A1224; --dark-2:#060B16;
-  --light:#F1F5FB; --light-2:#E7EEF8; --bg:#FFFFFF; --bg-soft:#F6F8FC;
-  --text:#0B1526; --text-2:#5C6B84; --text-3:#94A3B8; --border:rgba(11,21,38,.08);
+  --primary:#2563EB; --primary-2:#60A5FA; --dark:#1E40AF; --dark-2:#0A1224;
+  --light:#DBEAFE; --light-2:#EFF6FF; --bg:#f4f2ee; --bg-soft:#F6F8FC;
+  --text:#1e2b2c; --text-2:#4d5f5e; --text-3:#94A3B8; --border:rgba(30,43,44,.12);
   --success:#0FA968; --danger:#F23D4C; --gold:#F5A623;
-  --sh:0 1px 2px rgba(11,21,38,.04),0 4px 16px rgba(11,21,38,.05);
-  --sh2:0 2px 6px rgba(11,21,38,.05),0 16px 40px rgba(11,21,38,.10);
-  --sh3:0 8px 24px rgba(11,21,38,.08),0 32px 80px rgba(11,21,38,.18);
+  --sh:0 1px 2px rgba(30,43,44,.04),0 4px 16px rgba(30,43,44,.05);
+  --sh2:0 2px 6px rgba(30,43,44,.05),0 16px 40px rgba(30,43,44,.10);
+  --sh3:0 8px 24px rgba(30,43,44,.08),0 32px 80px rgba(30,43,44,.18);
   --ease:cubic-bezier(.22,1,.36,1);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
-body{font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0A1224;color:var(--text);line-height:1.5;touch-action:manipulation;-webkit-font-smoothing:antialiased}
+body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0A1224;color:var(--text);line-height:1.5;touch-action:manipulation;-webkit-font-smoothing:antialiased}
 #app{width:100%;height:100%;height:100dvh;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
 .screen{display:none;flex-direction:column;background:var(--bg);height:100%}
 .screen.on{display:flex}
 .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px;padding-bottom:100px}
 .scroll::-webkit-scrollbar{display:none}
 svg{stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px 22px;border-radius:999px;border:none;font-size:16px;font-weight:700;letter-spacing:-.01em;cursor:pointer;background:var(--primary);color:#fff;font-family:inherit;box-shadow:0 12px 28px rgba(11,91,211,.34),inset 0 1px 0 rgba(255,255,255,.18);transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px 22px;border-radius:999px;border:none;font-size:16px;font-weight:700;letter-spacing:-.01em;cursor:pointer;background:var(--primary);color:#fff;font-family:inherit;box-shadow:0 12px 28px rgba(37,99,235,.34),inset 0 1px 0 rgba(255,255,255,.18);transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
 .btn:active{transform:scale(.97)}
 .btn.ghost{background:var(--light);color:var(--primary);box-shadow:none}
 .btn.outline{background:#fff;color:var(--primary);border:1.5px solid var(--primary);box-shadow:none}
@@ -70,7 +70,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-l
 .bell .dot{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--danger);border:2px solid #fff}
 .hero{margin:18px;background:linear-gradient(160deg,#0F2A57 0%,var(--dark) 55%,var(--dark-2) 100%);border-radius:24px;padding:26px;display:flex;gap:12px;color:#fff;position:relative;overflow:hidden;box-shadow:var(--sh3)}
 .hero::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(76,141,255,.55),transparent 70%)}
-.hero::after{content:'';position:absolute;bottom:-80px;left:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(11,91,211,.5),transparent 70%)}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.5),transparent 70%)}
 .hero .eyebrow{display:inline-flex;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#7FB0FF;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:5px 12px;border-radius:999px;margin-bottom:12px}
 .hero h3{font-size:22px;line-height:1.25;font-weight:800;letter-spacing:-.02em}
 .hero p{color:rgba(255,255,255,.72);font-size:14px;margin-top:8px}
@@ -146,7 +146,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-l
 .tl-item{display:flex;gap:14px;padding-bottom:26px;position:relative}
 .tl-dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);background:#fff;flex-shrink:0;z-index:2;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff}
 .tl-item.done .tl-dot{background:var(--primary);border-color:var(--primary)}
-.tl-item.active .tl-dot{border:3px solid var(--primary);background:#fff;box-shadow:0 0 0 4px rgba(8,120,209,.12)}
+.tl-item.active .tl-dot{border:3px solid var(--primary);background:#fff;box-shadow:0 0 0 4px rgba(37,99,235,.12)}
 .tl-item:not(:last-child)::before{content:'';position:absolute;left:11px;top:26px;bottom:0;width:2px;background:var(--border)}
 .tl-item.done:not(:last-child)::before{background:var(--primary)}
 .tl-item h4{font-size:15px;font-weight:600}
@@ -180,7 +180,7 @@ svg{stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-l
 .menu-item .arr{color:var(--text-3)}
 
 /* Bottom nav */
-.bnav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:406px;background:rgba(255,255,255,.86);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(11,21,38,.06);border-radius:24px;display:flex;padding:8px;z-index:20;box-shadow:0 12px 40px rgba(11,21,38,.16)}
+.bnav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:406px;background:rgba(255,255,255,.86);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(30,43,44,.06);border-radius:24px;display:flex;padding:8px;z-index:20;box-shadow:0 12px 40px rgba(30,43,44,.16)}
 .bnav button{flex:1;background:none;border:none;font-size:11px;font-weight:700;letter-spacing:.01em;color:var(--text-3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit;border-radius:18px;padding:6px 0;transition:color .25s var(--ease)}
 .bnav button.on{color:var(--primary)}
 .bnav .pill{display:flex;align-items:center;justify-content:center;width:44px;height:28px;border-radius:14px;transition:background .25s var(--ease)}
@@ -239,7 +239,7 @@ body{-webkit-text-size-adjust:100%}
 .wlc-ic svg{width:36px;height:36px;stroke:#fff}
 .finger-ring{width:92px;height:92px;border-radius:50%;border:3px solid var(--primary);display:flex;align-items:center;justify-content:center;background:var(--bg-soft);color:var(--primary);animation:fpulse 1.8s ease-in-out infinite}
 .finger-ring svg{width:44px;height:44px}
-@keyframes fpulse{0%,100%{box-shadow:0 0 0 0 rgba(11,91,211,.25)}50%{box-shadow:0 0 0 16px rgba(11,91,211,0)}}
+@keyframes fpulse{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.25)}50%{box-shadow:0 0 0 16px rgba(37,99,235,0)}}
 @media (prefers-reduced-motion:reduce){.finger-ring{animation:none}}
 </style>
 </head>
@@ -309,8 +309,8 @@ function build(){
   a.innerHTML =
   '<section class="screen on" id="splash"><div class="logo">'+I.logo+'</div><div class="name">LavaYa</div><div class="slogan">Tu tiempo vale más</div></section>'+
   '<section class="screen" id="welcome"><div class="scroll flat">'+
-    '<div class="login-top"><div class="brand"><span class="mk">'+I.logo+'</span>LavaYa</div><h1>Tu tiempo vale más</h1><p>Bienvenido a LavaYa, tu atención inmediata. Retiramos, lavamos, planchamos y te entregamos impecable.</p></div>'+
-    '<div class="login-card" style="text-align:center"><div class="wlc-ic">'+I.basket+'</div><h3 style="margin:6px 0 4px">¡Bienvenido a LavaYa!</h3><p style="color:var(--text-2);font-size:14px;margin-bottom:14px">Tu atención inmediata — Crea tu cuenta y empieza a agendar tus servicios.</p>'+
+    '<div class="login-top"><div class="brand"><span class="mk">'+I.logo+'</span>LavaYa</div><h1>Bienvenido a LavaYa</h1><p>Tu atención inmediata. Retiramos, lavamos, planchamos y te entregamos impecable.</p></div>'+
+    '<div class="login-card" style="text-align:center"><div class="wlc-ic">'+I.basket+'</div><h3 style="margin:6px 0 4px">Ropa limpia a domicilio</h3><p style="color:var(--text-2);font-size:14px;margin-bottom:14px">Crea tu cuenta y empieza a agendar tus servicios.</p>'+
     '<button class="btn" id="btn-start" style="margin-bottom:10px">Comenzar</button>'+
     '<button class="btn ghost" id="btn-signin">Ya tengo cuenta</button></div>'+
   '</div></section>'+
