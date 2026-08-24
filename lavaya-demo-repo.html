@@ -173,7 +173,8 @@ svg{stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-l
 
 /* Perfil */
 .pf-head{background:linear-gradient(160deg,var(--primary),var(--primary-2));padding:calc(46px + env(safe-area-inset-top)) 20px 66px;text-align:center;color:#fff;border-radius:0 0 30px 30px}
-.pf-ava{width:80px;height:80px;border-radius:50%;background:#fff;color:var(--primary);font-size:28px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.pf-ava{width:80px;height:80px;border-radius:50%;background:#fff;color:var(--primary);font-size:28px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 10px 30px rgba(0,0,0,.2);position:relative}
+.pf-ava::after{content:'';position:absolute;right:6px;bottom:6px;width:16px;height:16px;border-radius:50%;background:var(--success);border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .pf-head h3{font-size:20px;font-weight:800}
 .pf-head p{font-size:13px;opacity:.88;margin-top:4px}
 .saldo{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--border);border-radius:15px;padding:18px;margin:-28px 18px 0;box-shadow:var(--sh3)}
