@@ -588,6 +588,11 @@ function build(){
   '</section>'+
   '<section class="screen" id="profile"><div class="scroll flat">'+
     '<div class="pf-head"><div class="pf-ava">'+(st.user?st.user.nombre.split(" ").map(function(n){return n[0]}).join("").slice(0,2).toUpperCase():"LV")+'</div><h3>'+(st.user?st.user.nombre:"")+'</h3><p>'+(st.user?st.user.email:"")+'</p></div>'+
+    '<div class="pf-stats" style="display:flex;gap:10px;margin:-22px 18px 0;padding:0 4px">'+
+      '<div style="flex:1;background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;text-align:center;box-shadow:var(--sh)"><div style="font-size:12px;color:var(--text-2);font-weight:600">Pedidos activos</div><div style="font-size:20px;font-weight:800;margin-top:4px" id="pf-active">0</div></div>'+
+      '<div style="flex:1;background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;text-align:center;box-shadow:var(--sh)"><div style="font-size:12px;color:var(--text-2);font-weight:600">Saldo</div><div style="font-size:20px;font-weight:800;margin-top:4px">$'+(db.saldo?db.saldo.toFixed(2):'0.00')+'</div></div>'+
+      '<div style="flex:1;background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;text-align:center;box-shadow:var(--sh)"><div style="font-size:12px;color:var(--text-2);font-weight:600">Plan</div><div style="font-size:14px;font-weight:700;margin-top:4px" id="pf-plan-badge">'+(db.plan?'Activo':'—')+'</div></div>'+
+    '</div>'+
     '<div class="menu" style="margin-top:22px">'+
     '<div class="menu-item" data-go="miperfil" tabindex="0" role="button"><span class="ic">'+I.user+'</span><span>Perfil</span><span class="val">Mi información</span><span class="arr">›</span></div>'+
     '<div class="menu-item" data-go="compras" tabindex="0" role="button"><span class="ic">'+I.receipt+'</span><span>Compras</span><span class="val">Mis pedidos</span><span class="arr">›</span></div>'+
