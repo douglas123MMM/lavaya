@@ -1,1 +1,1124 @@
-404: Not Found
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LavaYa — Tu tiempo vale más</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#2563EB">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<style>
+:root{
+  --primary:#2563EB; --primary-2:#60A5FA; --dark:#1E40AF; --dark-2:#0A1224;
+  --light:#DBEAFE; --light-2:#EFF6FF; --bg:#EEF2FA; --bg-soft:#F6F8FC;
+  --text:#1e2b2c; --text-2:#4d5f5e; --text-3:#94A3B8; --border:rgba(30,43,44,.12);
+  --success:#0FA968; --danger:#F23D4C; --gold:#F5A623;
+  --rad-lg:26px; --rad:19px; --rad-sm:14px;
+  --sh:0 1px 2px rgba(30,43,44,.04),0 4px 16px rgba(30,43,44,.05);
+  --sh2:0 2px 6px rgba(30,43,44,.05),0 16px 40px rgba(30,43,44,.10);
+  --sh3:0 8px 24px rgba(30,43,44,.08),0 32px 80px rgba(30,43,44,.18);
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0A1224;color:var(--text);line-height:1.5;touch-action:manipulation;-webkit-font-smoothing:antialiased}
+#app{width:100%;height:100%;height:100dvh;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.screen{display:none;flex-direction:column;background:var(--bg);height:100%}
+.screen.on{display:flex}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px;padding-bottom:100px}
+.scroll::-webkit-scrollbar{display:none}
+svg{stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px 22px;border-radius:999px;border:none;font-size:16px;font-weight:700;letter-spacing:-.01em;cursor:pointer;background:var(--primary);color:#fff;font-family:inherit;box-shadow:0 12px 28px rgba(37,99,235,.34),inset 0 1px 0 rgba(255,255,255,.18);transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--light);color:var(--primary);box-shadow:none}
+.btn.outline{background:#fff;color:var(--primary);border:1.5px solid var(--primary);box-shadow:none}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.topbar{display:flex;align-items:center;gap:10px;padding:calc(14px + env(safe-area-inset-top)) 16px 14px;background:var(--bg);border-bottom:1px solid var(--border);z-index:5}
+.topbar h1{font-size:17px;font-weight:800}
+.topbar .sub{font-size:13px;color:var(--text-2)}
+.back-btn{width:44px;height:44px;border-radius:50%;border:none;background:var(--light);color:var(--text);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lbl{font-size:14px;font-weight:700;margin:18px 0 8px}
+.input{width:100%;padding:13px 15px;border:1.5px solid var(--border);border-radius:14px;font-size:15px;font-family:inherit;background:var(--bg-soft);color:var(--text);outline:none;transition:.15s}
+.input:focus{border-color:var(--primary);background:#fff}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:13px 22px;border-radius:14px;font-size:14px;font-weight:600;box-shadow:var(--sh3);z-index:99;animation:up .25s ease;white-space:nowrap;max-width:90%;text-align:center}
+@keyframes up{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* Splash */
+#splash{background:radial-gradient(120% 120% at 20% 0%,#12305C 0%,var(--dark) 40%,var(--dark-2) 100%);align-items:center;justify-content:center;z-index:40}
+#splash .logo{width:88px;height:88px;border-radius:26px;background:rgba(255,255,255,.08);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;box-shadow:0 24px 60px rgba(0,0,0,.45);animation:pop .7s var(--ease)}
+#splash .logo svg{width:46px;height:46px;color:#fff}
+#splash .name{color:#fff;font-size:34px;font-weight:800;letter-spacing:-.02em;margin-top:22px;animation:fadeUp .7s .1s var(--ease) both}
+#splash .slogan{color:rgba(255,255,255,.6);font-size:15px;margin-top:6px;animation:fadeUp .7s .2s var(--ease) both}
+
+/* Login */
+#login{justify-content:flex-end}
+.login-top{background:linear-gradient(160deg,var(--primary),var(--primary-2));border-radius:0 0 40px 40px;padding:calc(50px + env(safe-area-inset-top)) 26px 90px;color:#fff}
+.login-top .brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800}
+.login-top .mk{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center}
+.login-top .mk svg{width:22px;height:22px}
+.login-top h1{font-size:26px;font-weight:800;margin-top:30px}
+.login-top p{opacity:.9;font-size:14px;margin-top:8px}
+.login-card{background:#fff;border-radius:26px;padding:24px;margin:-40px 18px 18px;box-shadow:var(--sh3);position:relative;z-index:2}
+
+/* Home */
+.greet{padding:calc(26px + env(safe-area-inset-top)) 18px 4px;display:flex;justify-content:space-between;align-items:flex-start}
+.greet h2{font-size:23px;font-weight:800}
+.greet p{color:var(--text-2);font-size:15px;margin-top:2px}
+.bell{width:44px;height:44px;border-radius:50%;background:var(--light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative}
+.bell .dot{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--danger);border:2px solid #fff}
+.hero{margin:18px;background:linear-gradient(160deg,#0F2A57 0%,var(--dark) 55%,var(--dark-2) 100%);border-radius:24px;padding:26px;display:flex;gap:12px;color:#fff;position:relative;overflow:hidden;box-shadow:var(--sh3)}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(76,141,255,.55),transparent 70%)}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.5),transparent 70%)}
+.hero .eyebrow{display:inline-flex;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#7FB0FF;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:5px 12px;border-radius:999px;margin-bottom:12px}
+.hero h3{font-size:22px;line-height:1.25;font-weight:800;letter-spacing:-.02em}
+.hero p{color:rgba(255,255,255,.72);font-size:14px;margin-top:8px}
+.hero .btn{margin-top:18px;width:auto;padding:12px 20px;font-size:14px;background:#fff;color:var(--dark);box-shadow:0 12px 28px rgba(0,0,0,.25)}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.hero-tags span{background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px}
+.hero .ilust{align-self:flex-end;margin-left:auto;z-index:1}
+.hero .ilust svg{width:88px;height:88px;color:rgba(255,255,255,.9);stroke-width:1.3}
+.sec-title{font-size:17px;font-weight:800;margin:4px 18px 12px;display:flex;justify-content:space-between;align-items:center}
+.sec-title .link{font-size:13px;color:var(--primary);font-weight:600;cursor:pointer;padding:8px 4px;display:inline-block;margin:-8px 0}
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 18px;margin-bottom:18px}
+.svc-card{background:var(--light);border-radius:16px;padding:16px;cursor:pointer;border:2px solid transparent;transition:.15s}
+.svc-card:active{border-color:var(--primary)}
+.svc-ico{width:44px;height:44px;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:10px;box-shadow:var(--sh)}
+.svc-ico svg{width:22px;height:22px;color:var(--primary)}
+.svc-card h4{font-size:15px;font-weight:700}
+.svc-card p{font-size:13px;color:var(--text-2);margin-top:2px}
+.cta-wrap{padding:0 18px 18px}
+
+/* Servicios */
+.srv-item{display:flex;align-items:center;gap:14px;padding:15px;border:1px solid var(--border);border-radius:var(--rad-sm);margin-bottom:12px;cursor:pointer;background:#fff;box-shadow:var(--sh);position:relative;overflow:hidden}
+.srv-item::before{content:'';position:absolute;left:0;top:0;width:4px;height:100%;background:linear-gradient(180deg,var(--primary),var(--primary-2));opacity:0;transition:opacity .25s}
+.srv-item:active::before,.srv-item:hover::before{opacity:1}
+.srv-item:active{transform:scale(.99);border-color:var(--primary)}
+.srv-ico{width:52px;height:52px;border-radius:14px;background:var(--light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.srv-ico svg{width:24px;height:24px;color:var(--primary)}
+.srv-item h4{font-size:16px;font-weight:700}
+.srv-item p{font-size:13px;color:var(--text-2);line-height:1.4}
+.includes{margin-top:16px;background:var(--light);border-radius:16px;padding:18px}
+.includes h4{font-size:15px;font-weight:700;margin-bottom:10px}
+.includes li{list-style:none;display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:8px}
+.includes li svg{width:18px;height:18px;color:var(--success)}
+
+/* Planes */
+.seg{display:flex;background:var(--light);border-radius:26px;padding:4px;margin-bottom:20px}
+.seg button{flex:1;padding:10px;border-radius:22px;border:none;background:transparent;font-weight:600;font-size:14px;color:var(--text-2);cursor:pointer;font-family:inherit}
+.seg button.on{background:var(--primary);color:#fff;box-shadow:var(--sh2)}
+.plan{position:relative;border:1.5px solid var(--border);border-radius:var(--rad-lg);padding:22px;margin-bottom:14px;background:#fff;box-shadow:var(--sh);overflow:hidden}
+.plan::after{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--primary-2));opacity:0;transition:opacity .25s}
+.plan:hover::after,.plan.pop::after{opacity:1}
+.plan.pop{border-color:var(--primary);box-shadow:var(--sh3)}
+.tag{position:absolute;top:-12px;right:20px;background:var(--primary);color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px}
+.plan h4{font-size:19px;font-weight:800}
+.plan .desc{font-size:13px;color:var(--text-2);margin-top:2px}
+.plan .price{margin-top:12px;display:flex;align-items:baseline}
+.plan .price b{font-size:34px;font-weight:800;letter-spacing:-1px}
+.plan .price span{font-size:14px;color:var(--text-2);margin-left:4px}
+.plan ul{margin:14px 0;list-style:none}
+.plan li{display:flex;gap:8px;font-size:14px;margin-bottom:9px}
+.plan li svg{width:18px;height:18px;color:var(--primary);margin-top:2px}
+
+/* Agendar */
+.addr{display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-radius:15px;padding:14px;background:#fff;box-shadow:var(--sh)}
+.addr .ico{width:44px;height:44px;border-radius:13px;background:var(--light);display:flex;align-items:center;justify-content:center}
+.addr .ico svg{width:22px;height:22px;color:var(--primary)}
+.addr b{font-size:15px}
+.addr p{font-size:13px;color:var(--text-2);margin-top:2px;line-height:1.4}
+.addr .cambiar{color:var(--primary);font-weight:600;font-size:14px;margin-left:auto;cursor:pointer;padding:8px 0 8px 12px;background:none;border:none;font-family:inherit}
+.opt{display:flex;align-items:center;gap:12px;padding:14px;border:1.5px solid var(--border);border-radius:15px;margin-bottom:10px;cursor:pointer;background:#fff;font-size:15px;font-weight:500}
+.opt svg{width:20px;height:20px;color:var(--text-2)}
+.opt.sel{border-color:var(--primary);background:var(--light);font-weight:600}
+.opt.sel svg{color:var(--primary)}
+.opt .check{margin-left:auto;color:var(--primary);font-weight:700;display:none;font-size:18px}
+.opt.sel .check{display:block}
+.dt{display:flex;gap:10px;align-items:center;padding:13px;border:1px solid var(--border);border-radius:14px;margin-bottom:10px;font-size:14px;background:#fff}
+.dt svg{width:20px;height:20px;color:var(--primary)}
+
+/* Tracking */
+.ord-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.ord-head h3{font-size:18px;font-weight:800}
+.ord-head p{font-size:13px;color:var(--text-2)}
+.status-hero{background:linear-gradient(150deg,var(--light),var(--light-2));border-radius:20px;padding:26px;text-align:center;margin-bottom:20px}
+.status-hero .big{width:70px;height:70px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:var(--sh2)}
+.status-hero .big svg{width:34px;height:34px;color:var(--primary)}
+.status-hero h3{font-size:18px;font-weight:800}
+.status-hero p{font-size:13px;color:var(--text-2);margin-top:6px}
+.tl-item{display:flex;gap:14px;padding-bottom:26px;position:relative}
+.tl-dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);background:#fff;flex-shrink:0;z-index:2;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff}
+.tl-item.done .tl-dot{background:var(--primary);border-color:var(--primary)}
+.tl-item.active .tl-dot{border:3px solid var(--primary);background:#fff;box-shadow:0 0 0 4px rgba(37,99,235,.12)}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:11px;top:26px;bottom:0;width:2px;background:var(--border)}
+.tl-item.done:not(:last-child)::before{background:var(--primary)}
+.tl-item h4{font-size:15px;font-weight:600}
+.tl-item.active h4{color:var(--primary);font-weight:700}
+.tl-item.done h4{color:var(--text)}
+.tl-item:not(.done):not(.active) h4{color:var(--text-2)}
+.tl-item p{font-size:13px;color:var(--text-2);margin-top:2px}
+
+/* Pedidos */
+.ord-card{background:#fff;border:1px solid var(--border);border-radius:var(--rad);padding:16px;margin-bottom:12px;box-shadow:var(--sh);cursor:pointer}
+.badge{display:inline-flex;background:var(--light);color:var(--primary);font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px}
+.badge.green{background:#E9F9EF;color:var(--success)}
+.row{display:flex;justify-content:space-between;align-items:center}
+
+/* Perfil */
+.pf-head{background:linear-gradient(160deg,var(--primary),var(--primary-2));padding:calc(46px + env(safe-area-inset-top)) 20px 66px;text-align:center;color:#fff;border-radius:0 0 30px 30px}
+.pf-ava{width:80px;height:80px;border-radius:50%;background:#fff;color:var(--primary);font-size:28px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.pf-head h3{font-size:20px;font-weight:800}
+.pf-head p{font-size:13px;opacity:.88;margin-top:4px}
+.saldo{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--border);border-radius:15px;padding:18px;margin:-28px 18px 0;box-shadow:var(--sh3)}
+.saldo small{color:var(--text-2);font-size:13px}
+.saldo b{font-size:26px;display:block}
+.saldo .btn{width:auto;padding:11px 24px;font-size:14px}
+.menu{margin:20px 18px}
+.menu-item{display:flex;align-items:center;gap:13px;padding:15px 2px;border-bottom:1px solid var(--border);cursor:pointer}
+.menu-item:active{opacity:.6}
+.menu-item .ic{width:40px;height:40px;border-radius:12px;background:var(--light);display:flex;align-items:center;justify-content:center}
+.menu-item .ic svg{width:20px;height:20px;color:var(--primary)}
+.menu-item span{flex:1;font-size:15px;font-weight:500}
+.menu-item .val{color:var(--text-2);font-size:13px;flex:0 0 auto}
+.menu-item .arr{color:var(--text-3)}
+
+/* Bottom nav */
+.bnav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:406px;background:rgba(255,255,255,.86);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(30,43,44,.06);border-radius:24px;display:flex;padding:8px;z-index:20;box-shadow:0 12px 40px rgba(30,43,44,.16)}
+.bnav button{flex:1;background:none;border:none;font-size:11px;font-weight:700;letter-spacing:.01em;color:var(--text-3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit;border-radius:18px;padding:6px 0;transition:color .25s var(--ease)}
+.bnav button.on{color:var(--primary)}
+.bnav .pill{display:flex;align-items:center;justify-content:center;width:44px;height:28px;border-radius:14px;transition:background .25s var(--ease)}
+.bnav button.on .pill{background:var(--light)}
+.bnav svg{width:22px;height:22px}
+
+.rate{display:flex;gap:8px;justify-content:center;margin:14px 0}
+.rate button{font-size:32px;background:none;border:none;cursor:pointer;color:#D8E2EC}
+.rate button.on{color:var(--gold)}
+.modal{position:fixed;inset:0;background:rgba(11,36,64,.5);display:flex;align-items:center;justify-content:center;z-index:80;backdrop-filter:blur(2px)}
+.empty{text-align:center;padding:50px 20px;color:var(--text-2)}
+.empty .ic{width:70px;height:70px;border-radius:22px;background:var(--light);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.empty .ic svg{width:32px;height:32px;color:var(--text-3)}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.pw-wrap{position:relative}
+.pw-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:13px;font-weight:600;color:var(--primary);cursor:pointer;padding:10px 4px;font-family:inherit}
+/* ===== Pantalla de pago (estilo Cashea) ===== */
+.pay-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:20px;margin:4px 0}
+.pay-plan{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.pay-plan-name{font-size:17px;font-weight:800}
+.pay-plan-sub{font-size:13px;color:var(--text-2)}
+.pay-amount{background:var(--bg-soft);border-radius:14px;padding:16px;text-align:center;margin-bottom:14px}
+.pay-amount small{display:block;font-size:12px;color:var(--text-2);margin-bottom:4px}
+.pay-amount b{font-size:30px;font-weight:800;color:var(--primary);letter-spacing:-.5px}
+.pay-entry{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.pay-entry:last-of-type{border-bottom:none}
+.pay-lbl{font-size:13px;color:var(--text-2)}
+.pay-val{font-size:14px;font-weight:600;text-align:right}
+.pay-note{font-size:13px;color:var(--text-2);background:var(--bg-soft);border-radius:12px;padding:12px;margin:12px 0}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}}
+/* ===== Premium app frame ===== */
+html,body{background:#0A1224}
+body{-webkit-text-size-adjust:100%}
+#app{max-width:430px;margin:0 auto;box-shadow:0 0 80px rgba(0,0,0,.45)}
+.modal{max-width:430px;margin:0 auto}
+.screen.on{animation:fadeUp .4s var(--ease)}
+.scroll{overscroll-behavior:contain}
+.scroll.flat{padding:0 0 100px}
+.topbar h1{font-size:18px;letter-spacing:-.02em}
+.topbar .sub{font-size:14px}
+.greet h2{font-size:25px;letter-spacing:-.02em}
+.greet p{font-size:16px}
+.hero p{font-size:14px}
+.hero-tags span{font-size:12px}
+.sec-title{font-size:18px;letter-spacing:-.01em}
+.sec-title .link{font-size:14px}
+.svc-card h4{font-size:16px;letter-spacing:-.01em}
+.svc-card p{font-size:13px}
+.srv-item h4{font-size:17px}
+.srv-item p{font-size:14px}
+.includes li{font-size:15px}
+.badge{font-size:12px}
+.tag{font-size:12px}
+.plan .desc{font-size:14px}
+.plan h4{font-size:21px;letter-spacing:-.02em}
+.addr p{font-size:14px}
+.opt{font-size:16px}
+.dt{font-size:15px}
+.tl-item p{font-size:14px}
+.menu-item span{font-size:16px}
+.menu-item .val{font-size:14px}
+.bnav button{font-size:11px}
+.lbl{font-size:15px}
+.input{font-size:16px}
+.input-date{flex:1;padding:6px 4px;border:none;background:transparent;font-size:14px;font-family:inherit;color:var(--text);outline:none}
+.select-time{flex:1;padding:6px 4px;border:none;background:transparent;font-size:14px;font-family:inherit;color:var(--text);outline:none}
+.map-note{display:flex;gap:8px;align-items:flex-start;padding:12px;background:var(--bg-soft);border-radius:12px}
+.wlc-ic{width:74px;height:74px;border-radius:26px;background:var(--primary);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;color:#fff}
+.wlc-ic svg{width:36px;height:36px;stroke:#fff}
+.finger-ring{width:92px;height:92px;border-radius:50%;border:3px solid var(--primary);display:flex;align-items:center;justify-content:center;background:var(--bg-soft);color:var(--primary);animation:fpulse 1.8s ease-in-out infinite}
+.finger-ring svg{width:44px;height:44px}
+@keyframes fpulse{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.25)}50%{box-shadow:0 0 0 16px rgba(37,99,235,0)}}
+@media (prefers-reduced-motion:reduce){.finger-ring{animation:none}}
+
+/* ====== MEJORAS PREMIUM UX ====== */
+/* Transición suave entre pantallas */
+.screen.on{animation:screenIn .42s var(--ease) both}
+@keyframes screenIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.screen.on .scroll>*{animation:staggerUp .5s var(--ease) both}
+.screen.on .scroll>*:nth-child(2){animation-delay:.05s}
+.screen.on .scroll>*:nth-child(3){animation-delay:.1s}
+.screen.on .scroll>*:nth-child(4){animation-delay:.15s}
+.screen.on .scroll>*:nth-child(5){animation-delay:.2s}
+@keyframes staggerUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* Tarjetas: feedback táctil premium */
+.svc-card,.plan,.ord-card,.addr,.srv-item,.opt,.menu-item,.stat-card{transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s}
+.svc-card:active,.plan:active,.ord-card:active,.addr:active,.srv-item:active,.opt:active{transform:scale(.97)}
+.svc-card:hover,.plan:hover,.ord-card:hover,.addr:hover{box-shadow:var(--sh2);border-color:rgba(37,99,235,.25)}
+
+/* Botones con ripple */
+.btn{position:relative;overflow:hidden}
+.btn::after{content:'';position:absolute;left:50%;top:50%;width:0;height:0;border-radius:50%;background:rgba(255,255,255,.35);transform:translate(-50%,-50%);opacity:0;pointer-events:none}
+.btn:active::after{animation:ripple .55s ease-out}
+@keyframes ripple{0%{width:0;height:0;opacity:.5}100%{width:320px;height:320px;opacity:0}}
+
+/* Heartbeat sutil en IDs de pedido */
+.ord-card .badge{animation:none}
+.badge{position:relative}
+.orderTrackRow{position:relative}
+
+/* Skeleton loading */
+.skeleton{background:linear-gradient(90deg,var(--bg-soft) 25%,#eef2f7 50%,var(--bg-soft) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:14px}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+/* Hero con brillo suave */
+.hero{position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;top:-40%;right:-20%;width:60%;height:120%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.12),transparent);transform:translateX(120%);animation:sheen 6s var(--ease) infinite}
+@keyframes sheen{0%,65%{transform:translateX(120%)}85%,100%{transform:translateX(-130%)}}
+
+/* Entrada de splash con partículas */
+#splash .logo{animation:logoIn .8s var(--ease) both}
+@keyframes logoIn{0%{transform:scale(.5) rotate(-8deg);opacity:0}60%{transform:scale(1.06) rotate(1deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+
+/* Toast premium */
+.toast{border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(12px);background:rgba(10,18,36,.9)}
+
+/* ====== MEJORAS PREMIUM UX v2 ====== */
+/* Splash: barra de progreso + brillo de fondo animado */
+#splash::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 300px at 50% -10%,rgba(120,162,255,.22),transparent 60%);animation:breathe 3.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.6}50%{opacity:1}}
+#splash::after{content:'';position:absolute;bottom:86px;left:50%;transform:translateX(-50%);width:120px;height:4px;border-radius:99px;background:linear-gradient(90deg,var(--primary),var(--primary-2),var(--light),var(--primary));background-size:300% 100%;animation:progressGlow 1.6s ease-in-out infinite}
+@keyframes progressGlow{0%{background-position:0% 0;opacity:.5}50%{background-position:100% 0;opacity:1}100%{background-position:200% 0;opacity:.5}}
+
+/* Botones premium: escala al presionar + brillo recorrido */
+.btn{will-change:transform}
+.btn:active{transform:scale(.96)}
+.btn:not(.btn-ghost):not(:disabled)::before{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.25),transparent);transform:skewX(-18deg);transition:left .6s var(--ease);pointer-events:none}
+.btn:not(.btn-ghost):not(:disabled):hover::before{left:130%}
+
+/* Bottom nav: item activo con rebote elástico */
+.bnav button.on .pill{animation:navBounce .45s var(--ease) both}
+@keyframes navBounce{0%{transform:scale(.7)}55%{transform:scale(1.18)}75%{transform:scale(.94)}100%{transform:scale(1)}}
+.bnav button:active .pill{transform:scale(.88)}
+
+/* Transición de pantalla con micro-escala para más fluidez */
+@keyframes screenIn{0%{opacity:0;transform:translateY(18px) scale(.985)}60%{opacity:1}100%{opacity:1;transform:none}}
+
+/* Tarjetas: entrada con levante */
+.outfit .ord-card,.ord-card{will-change:transform}
+.ord-card{animation:cardIn .5s var(--ease) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+
+/* Skeleton: pulso adicional para sensación de carga viva */
+.skeleton{position:relative;overflow:hidden}
+.skeleton::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.14),transparent 60%);animation:skelePulse 1.4s ease-in-out infinite}
+@keyframes skelePulse{0%,100%{opacity:0}50%{opacity:1}}
+
+/* Toast: entrada con resorte */
+.toast{animation:toastSpring .38s cubic-bezier(.21,1.02,.55,1.15) both}
+@keyframes toastSpring{0%{opacity:0;transform:translate(-50%,14px) scale(.94)}100%{opacity:1;transform:translate(-50%,0) scale(1)}}
+
+/* Éxito: check animado (para pantallas de confirmación) */
+.check-pop{display:inline-flex;animation:checkPop .55s var(--ease) both}
+@keyframes checkPop{0%{transform:scale(0) rotate(-14deg);opacity:0}60%{transform:scale(1.15) rotate(3deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+
+/* ====== ONBOARDING PREMIUM ====== */
+.onb-stage{flex:1;display:flex;flex-direction:column;padding:calc(34px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));background:linear-gradient(170deg,#fff,var(--light-2) 55%,var(--bg));position:relative;overflow:hidden}
+.onb-stage::before{content:'';position:absolute;top:-120px;right:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.28),transparent 70%)}
+.onb-top{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2}
+.onb-brand{display:flex;align-items:center;gap:9px;font-size:18px;font-weight:800;color:var(--text)}
+.onb-brand .mk{width:34px;height:34px;border-radius:12px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(37,99,235,.3)}
+.onb-brand .mk svg{width:18px;height:18px}
+.onb-skip{font-size:13px;font-weight:700;color:var(--text-3);cursor:pointer;padding:8px 4px;background:none;border:none;font-family:inherit}
+.onb-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;z-index:2;animation:fadeUp .5s var(--ease)}
+.onb-ilust{width:220px;height:220px;border-radius:60% 40% 52% 48%/48% 56% 44% 52%;background:linear-gradient(150deg,var(--primary),var(--primary-2) 70%,var(--light));display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 30px 70px rgba(37,99,235,.35),inset 0 1px 0 rgba(255,255,255,.35);position:relative;margin-bottom:34px}
+.onb-ilust svg{width:100px;height:100px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.2))}
+.onb-ilust::before{content:'';position:absolute;inset:-14px;border-radius:58% 42% 55% 45%/50% 48% 52% 50%;border:1.5px dashed rgba(37,99,235,.35);animation:spin 24s linear infinite}
+.onb-ilust::after{content:'';position:absolute;inset:-32px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.18),transparent 70%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.onb-titulo{font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:10px}
+.onb-txt{font-size:15px;color:var(--text-2);max-width:300px;line-height:1.55}
+.onb-dots{display:flex;gap:8px;justify-content:center;margin:26px 0 20px}
+.onb-dot{width:8px;height:8px;border-radius:99px;background:var(--border);transition:.3s var(--ease)}
+.onb-dot.on{width:26px;background:var(--primary);box-shadow:0 4px 10px rgba(37,99,235,.4)}
+/* Botón deslizar (estilo huella/swipe) */
+.slide-wrap{position:relative;height:64px;border-radius:999px;background:rgba(37,99,235,.1);border:1.5px dashed rgba(37,99,235,.3);overflow:hidden;touch-action:none}
+.slide-thumb{position:absolute;top:6px;left:6px;width:52px;height:52px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(37,99,235,.45);z-index:2;transition:left .15s ease-out}
+.slide-thumb svg{width:24px;height:24px}
+.slide-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14.5px;font-weight:700;color:var(--primary);letter-spacing:.02em;padding-left:40px;animation:slideTxt 1.8s ease-in-out infinite;pointer-events:none}
+@keyframes slideTxt{0%,100%{opacity:.45}50%{opacity:1}}
+
+/* ====== PERFIL PREMIUM ====== */
+#profile .pf-head{position:relative;overflow:hidden}
+.pf-head::before{content:'';position:absolute;top:-70px;right:-60px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.10)}
+.pf-head::after{content:'';position:absolute;bottom:20px;left:-50px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.07)}
+.pf-ava{position:relative;border:3px solid rgba(255,255,255,.65);box-shadow:0 12px 34px rgba(0,0,0,.3);animation:avaIn .7s var(--ease) both}
+@keyframes avaIn{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.pf-ring{position:absolute;inset:-8px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.5);animation:spin 16s linear infinite}
+.pf-badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:5px 13px;border-radius:99px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);font-size:12px;font-weight:700}
+.pf-badge svg{width:13px;height:13px}
+.pf-stats{display:flex;gap:10px;margin:-26px 18px 0;background:#fff;border-radius:20px;padding:16px 10px;box-shadow:var(--sh2);position:relative;z-index:3}
+.pf-stat{flex:1;text-align:center}
+.pf-stat b{display:block;font-size:17px;color:var(--text)}
+.pf-stat b.ok{color:var(--success)}
+.pf-stat span{font-size:11px;color:var(--text-3);font-weight:600}
+.menu-item{animation:fadeUp .3s var(--ease) both}
+.menu-item:active{transform:scale(.98)}
+
+/* Menú oculto sin sesión */
+.bnav.hide{display:none}
+.app-noauth .scroll.flat{padding-bottom:26px}
+
+/* Iconos bnav mejorados: pill activo degradado */
+.bnav button.on .pill{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;box-shadow:0 6px 14px rgba(37,99,235,.35)}
+.wlc-ic-lg svg{width:52px;height:52px}
+
+/* Respeto a reducción de movimiento */
+@media (prefers-reduced-motion:reduce){#splash::before,#splash::after,.btn::before,.onb-ilust::before,.pf-ring,.slide-txt{animation:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var LS = "lavaya_v2";
+var I = {
+  logo:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 3v13M6 3v13M18 3v13M4 8h16M12 16c-3.5 0-6 2-6 5h12c0-3-2.5-5-6-5Z"/><path d="M12 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>',
+  basket:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M3 7h18l-1 12H4L3 7Z"/><path d="M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/></svg>',
+  wash:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M3 7h18v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7Z"/><path d="M5 11v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/><path d="M8 7V4h8v3"/></svg>',
+  iron:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 3v11M8 3v11M16 3v11M4 14h16l-1 5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2l-1-5Z"/><path d="M6 7h12"/></svg>',
+  shirt:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23Z"/></svg>',
+  sparkle:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3Z"/><path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8L19 14Z"/></svg>',
+  bell:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',
+  back:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>',
+  arrow:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  check:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>',
+  home:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>',
+  receipt:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 7h8M8 11h8"/></svg>',
+  star:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 3l2.5 5.3 5.8.7-4.3 4 1.1 5.7-5.1-2.8-5.1 2.8 1.1-5.7-4.3-4 5.8-.7L12 3Z"/></svg>',
+  user:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>',
+  bike:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>',
+  pin:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
+  cal:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>',
+  clock:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  card:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
+  gift:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4"/><path d="M5 12v9h14v-9M12 8v13"/></svg>',
+  help:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 2-2.5 2.5-2.5 2.5V14"/></svg>',
+  gear:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.5-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.5 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.5-2-1.5c.1-.4.1-.8.1-1.2Z"/></svg>',
+  headset:'<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M4 13a8 8 0 0 1 16 0"/><path d="M4 13v3a2 2 0 0 0 2 2h1v-5H6a2 2 0 0 0-2 2Z"/><path d="M20 13v3a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2Z"/></svg>'
+};
+var S = [
+  {id:"lavar", name:"Lavar", desc:"Lavado profesional con productos de alta calidad.", icon:"wash"},
+  {id:"planchar", name:"Planchar", desc:"Planchado a mano o con vapor para un acabado perfecto.", icon:"iron"},
+  {id:"lavar-planchar", name:"Lavar + Planchar", desc:"El paquete completo. Lavamos y planchamos por ti.", icon:"shirt"},
+  {id:"solo", name:"Solo Planchado", desc:"Ideal para prendas que solo necesitan planchado.", icon:"sparkle"}
+];
+var P = [
+  {id:"basico", name:"Básico", desc:"Ideal para cargas pequeñas", price:15, tipo:"por kg", f:["Hasta 7 kg incluidos","Retiro y entrega a domicilio","Incluye planchado"]},
+  {id:"estandar", name:"Estándar", desc:"Para familias pequeñas", price:25, pop:true, tipo:"por kg", f:["Hasta 15 kg incluidos","Retiro y entrega a domicilio","Incluye planchado","10% OFF en extras"]},
+  {id:"premium", name:"Premium", desc:"Máximo cuidado para tu ropa", price:40, tipo:"por kg", f:["Hasta 30 kg incluidos","Retiros ilimitados","Incluye planchado","20% OFF en extras","Atención prioritaria"]}
+];
+var F = [
+  {t:"Solicitud recibida", time:"Pendiente"},
+  {t:"Pedido confirmado", time:"Pendiente"},
+  {t:"Ropa retirada", time:"Pendiente"},
+  {t:"En proceso de lavado", time:"Pendiente"},
+  {t:"En proceso de planchado", time:"Pendiente"},
+  {t:"En camino a tu dirección", time:"Pendiente"},
+  {t:"Entregado", time:"Pendiente"}
+];
+var db = load();
+var st = {sel:null, per:"mensual", cur:null, user:null, token:loadToken(), addr:null};
+var API = "https://lavaya-api.vercel.app";
+function load(){try{return JSON.parse(localStorage.getItem(LS))||{orders:[],plan:null,saldo:15,user:null}}catch(e){return{orders:[],plan:null,saldo:15,user:null}}}
+function loadToken(){try{return localStorage.getItem("lavaya_token")||null}catch(e){return null}}
+function saveToken(t){try{if(t)localStorage.setItem("lavaya_token",t);else localStorage.removeItem("lavaya_token");st.token=t}catch(e){}}
+function save(){localStorage.setItem(LS,JSON.stringify(db))}
+function apiGet(path){return fetch(API+path,{headers:{"Authorization":st.token?"Bearer "+st.token:""}}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||d.message||"Error");return d})})}
+function apiPost(path,body){return fetch(API+path,{method:"POST",headers:{"Content-Type":"application/json","Authorization":st.token?"Bearer "+st.token:""},body:JSON.stringify(body)}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||d.message||"Error");return d})})}
+function apiPut(path,body){return fetch(API+path,{method:"PUT",headers:{"Content-Type":"application/json","Authorization":st.token?"Bearer "+st.token:""},body:JSON.stringify(body)}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||d.message||"Error");return d})})}
+function toast(m){var t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},2200)}
+function $(s,r){return(r||document).querySelector(s)}
+function show(id){document.querySelectorAll(".screen").forEach(function(s){s.classList.remove("on")});var e=document.getElementById(id);if(e){e.classList.add("on");var sc=e.querySelector(".scroll");if(sc)sc.scrollTop=0;}var nav=document.querySelector('.bnav');var hideScreens=['splash','onb1','onb2','welcome','finger','login','register','otp'];if(nav){if(hideScreens.indexOf(id)!==-1){nav.classList.add('hide')}else{nav.classList.remove('hide')}}}
+
+function build(){
+  var a=document.getElementById("app");
+  a.innerHTML =
+  '<section class="screen on" id="splash"><div class="logo">'+I.logo+'</div><div class="name">LavaYa</div><div class="slogan">Tu tiempo vale más</div></section>'+
+  /* ====== ONBOARDING (2 pantallas, botón deslizar) ====== */
+  '<section class="screen" id="onb1"><div class="onb-stage">'+
+    '<div class="onb-top"><div class="onb-brand"><span class="mk">'+I.logo+'</span>LavaYa</div><button class="onb-skip" id="onb-skip1">Saltar</button></div>'+
+    '<div class="onb-body">'+
+    '<div class="onb-ilust">'+I.basket+'</div>'+
+    '<h1 class="onb-titulo">Tu tiempo vale más</h1>'+
+    '<p class="onb-txt">Deja la lavandería en nuestras manos. Retíramos tu ropa a domicilio y la devolvemos impecable.</p>'+
+    '<div class="onb-dots"><span class="onb-dot on"></span><span class="onb-dot"></span></div>'+
+    '<div class="slide-wrap" id="slide1"><div class="slide-thumb">'+I.arrow+'</div><div class="slide-txt">Desliza para continuar</div></div>'+
+    '</div>'+
+  '</div></section>'+
+  '<section class="screen" id="onb2"><div class="onb-stage">'+
+    '<div class="onb-top"><div class="onb-brand"><span class="mk">'+I.logo+'</span>LavaYa</div><button class="onb-skip" id="onb-skip2">Saltar</button></div>'+
+    '<div class="onb-body">'+
+    '<div class="onb-ilust" style="background:linear-gradient(150deg,var(--primary-2),var(--light));color:var(--primary)">'+I.bike+'</div>'+
+    '<h1 class="onb-titulo">Nosotros vamos por ella</h1>'+
+    '<p class="onb-txt">Lavamos, planchamos y entregamos en tu puerta. Agenda en 30 segundos y olvídate de la lavadora.</p>'+
+    '<div class="onb-dots"><span class="onb-dot"></span><span class="onb-dot on"></span></div>'+
+    '<div class="slide-wrap" id="slide2"><div class="slide-thumb">'+I.arrow+'</div><div class="slide-txt">Desliza para comenzar</div></div>'+
+    '</div>'+
+  '</div></section>'+
+  '<section class="screen" id="welcome"><div class="scroll flat">'+
+    '<div class="login-top"><div class="brand"><span class="mk">'+I.logo+'</span>LavaYa</div><h1>Bienvenido</h1><p>Cuidamos tu ropa como tú lo harías. LavaYa: tu tiempo vale más.</p></div>'+
+    '<div class="login-card" style="text-align:center"><div class="wlc-ic">'+I.shirt+'</div><h3 style="margin:6px 0 4px">Tu ropa en manos expertas</h3><p style="color:var(--text-2);font-size:14px;margin-bottom:14px">Inicia sesión o crea tu cuenta en menos de un minuto.</p>'+
+    '<button class="btn" id="btn-signin" style="margin-bottom:10px">Iniciar sesión</button>'+
+    '<button class="btn ghost" id="btn-start">Crear cuenta</button></div>'+
+  '</div></section>'+
+  '<section class="screen" id="finger"><div class="scroll flat">'+
+    '<div class="login-top" style="min-height:45vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px">'+
+    '<div class="brand" style="margin-bottom:24px"><span class="mk">'+I.logo+'</span>LavaYa</div>'+
+    '<div class="finger-ring" id="finger-ring">'+I.user+'</div>'+
+    '<h1 style="font-size:22px;margin:20px 0 6px">'+(st.user?st.user.nombre:'Hola')+'</h1>'+
+    '<p style="color:var(--text-2);font-size:15px">Toca el sensor para entrar</p>'+
+    '<p id="finger-msg" style="font-size:12px;color:var(--text-3);margin-top:14px"></p>'+
+    '<button class="btn ghost" id="btn-logout" style="margin-top:28px">Cambiar de cuenta</button></div>'+
+  '</div></section>'+
+  '<section class="screen" id="login"><div class="scroll flat">'+
+    '<div class="login-top"><div class="brand"><span class="mk">'+I.logo+'</span>LavaYa</div><div style="width:110px;height:110px;border-radius:36% 64% 55% 45%/55% 46% 54% 45%;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;margin:18px auto 4px;backdrop-filter:blur(6px)"><span style="color:#fff" class="wlc-ic-lg">'+I.basket+'</span></div><h1 style="text-align:center">Bienvenido de nuevo</h1><p style="text-align:center">Tu ropa limpia y planchada, con un solo toque.</p></div>'+
+    '<div class="login-card"><label class="lbl" for="l-cedula">Correo electrónico o cédula</label><input class="input" id="l-cedula" placeholder="tu@correo.com o V-12345678">'+
+    '<label class="lbl" for="l-pass">Contraseña</label><div class="pw-wrap"><input class="input" id="l-pass" type="password" value=""><button type="button" class="pw-toggle" id="btn-pass">Mostrar</button></div>'+
+    '<button class="btn" id="btn-login" style="margin-top:16px">Iniciar sesión</button>'+
+    '<button class="btn ghost" id="btn-reg" style="margin-top:10px">Crear cuenta</button></div>'+
+  '</div></section>'+
+  '<section class="screen" id="register"><div class="scroll flat">'+
+    '<div class="login-top"><div class="brand"><span class="mk">'+I.logo+'</span>LavaYa</div><h1>Crea tu cuenta</h1><p>Regístrate en menos de un minuto.</p></div>'+
+    '<div class="login-card"><label class="lbl" for="r-cedula">Cédula</label><input class="input" id="r-cedula" placeholder="V-12345678">'+
+    '<label class="lbl" for="r-nombre">Nombre completo</label><input class="input" id="r-nombre" placeholder="María García">'+
+    '<label class="lbl" for="r-email">Correo</label><input class="input" id="r-email" type="email" placeholder="tu@correo.com">'+
+    '<label class="lbl" for="r-tel">Teléfono</label><input class="input" id="r-tel" placeholder="0414-1234567">'+
+    '<label class="lbl" for="r-pass">Contraseña</label><input class="input" id="r-pass" type="password" placeholder="Mínimo 6 caracteres">'+
+    '<label class="lbl" for="r-foto">Foto de tu cédula (obligatoria)</label><input class="input" id="r-foto" type="file" accept="image/*" capture="environment">'+
+    '<div id="foto-preview" style="font-size:12px;color:var(--text-2);margin-top:4px"></div>'+
+    '<button class="btn" id="btn-register" style="margin-top:16px">Crear mi cuenta</button>'+
+    '<button class="btn ghost" data-go="login" style="margin-top:10px">Ya tengo cuenta</button></div>'+
+  '</div></section>'+
+  '<section class="screen" id="otp"><div class="scroll flat">'+
+    '<div class="login-top" style="min-height:38vh;display:flex;flex-direction:column;justify-content:center;padding:40px 24px">'+
+    '<div class="brand" style="margin-bottom:22px"><span class="mk">'+I.logo+'</span>LavaYa</div>'+
+    '<h1 style="font-size:22px">Verifica tu número</h1><p style="font-size:14px;opacity:.9;margin-top:6px">Enviamos un código de 6 dígitos a tu WhatsApp.</p></div>'+
+    '<div class="login-card">'+
+    '<label class="lbl" for="otp-codigo">Código de verificación</label>'+
+    '<input class="input" id="otp-codigo" inputmode="numeric" maxlength="6" placeholder="123456" style="font-size:22px;letter-spacing:6px;text-align:center">'+
+    '<div id="otp-demo" style="font-size:13px;color:var(--text-2);text-align:center;margin-top:10px"></div>'+
+    '<button class="btn" id="btn-otp-verify" style="margin-top:18px">Verificar</button>'+
+    '<button class="btn ghost" id="btn-otp-resend" style="margin-top:10px">Reenviar código</button>'+
+    '</div>'+
+  '</div></section>'+
+  '<section class="screen" id="home"><div class="scroll flat">'+
+    '<div class="greet"><div><h2>¡Hola, <span id="h-name">'+(st.user?st.user.nombre:"Amigo")+'</span>!</h2><p>¿Qué necesitas hoy?</p></div>'+
+    '<div style="display:flex;gap:8px"><button class="bell" id="btn-help" aria-label="Ayuda">?</button><button class="bell" id="btn-notif" aria-label="Notificaciones">'+I.bell+'<span class="dot"></span></button></div></div>'+
+    '<div class="hero"><div style="flex:1"><span class="eyebrow">Lavandería premium</span><h3>Nosotros nos encargamos de tu ropa</h3><p>Retiramos, lavamos, planchamos y te entregamos impecable.</p><button class="btn" data-go="schedule">Agendar servicio</button><div class="hero-tags"><span>Retiro hoy</span><span>Cuidado premium</span><span>4.9 · 2.4k</span></div></div><div class="ilust">'+I.basket+'</div></div>'+
+    '<div class="sec-title">Servicios <span class="link" data-go="services" tabindex="0" role="button">Ver todos</span></div>'+
+    '<div class="svc-grid">'+S.map(function(s){return '<div class="svc-card" data-go="services" tabindex="0" role="button"><div class="svc-ico">'+I[s.icon]+'</div><h4>'+s.name+'</h4><p>'+(s.id==="lavar"?"Ropa limpia y fresca":s.id==="planchar"?"Planchado impecable":s.id==="lavar-planchar"?"Servicio completo":"Para lo que necesitas")+'</p></div>'}).join("")+'</div>'+
+    '<div class="cta-wrap"><button class="btn" data-go="schedule">Agendar ahora</button></div>'+
+  '</div></section>'+
+  '<section class="screen" id="services">'+
+    '<div class="topbar"><button class="back-btn" aria-label="Volver" data-go="home">‹</button><div><h1>Nuestros servicios</h1><div class="sub">Elige el que mejor se adapte a ti</div></div></div>'+
+    '<div class="scroll">'+S.map(function(s){return '<div class="srv-item" data-go="schedule" tabindex="0" role="button"><div class="srv-ico">'+I[s.icon]+'</div><div><h4>'+s.name+'</h4><p>'+s.desc+'</p></div></div>'}).join("")+
+    '<div class="includes"><h4>Todos los servicios incluyen</h4><li>'+I.check+' Retiro a domicilio</li><li>'+I.check+' Entrega programada</li><li>'+I.check+' Cuidado prenda por prenda</li></div></div>'+
+  '</section>'+
+  '<section class="screen" id="plans">'+
+    '<div class="topbar"><button class="back-btn" aria-label="Volver" data-go="home">‹</button><div><h1>Elige tu plan</h1><div class="sub">Escoge el que mejor se adapte</div></div></div>'+
+    '<div class="scroll"><div id="plans-list"></div></div>'+
+  '</section>'+
+  '<section class="screen" id="payment">'+
+    '<div class="topbar"><button class="back-btn" aria-label="Volver" data-go="plans">‹</button><div><h1>Realiza tu pago</h1><div class="sub">Transferencia o pago móvil</div></div></div>'+
+    '<div class="scroll">'+
+    '<div class="pay-card" id="pay-body"></div>'+
+    '</div>'+
+  '</section>'+
+  '<section class="screen" id="schedule">'+
+    '<div class="topbar"><button class="back-btn" aria-label="Volver" data-go="plans">‹</button><div><h1>Confirmar pedido</h1><div class="sub" id="sc-sub">Elige dirección, fecha y hora</div></div></div>'+
+    '<div class="scroll">'+
+    '<div id="plan-confirm" style="background:var(--bg-soft);border-radius:16px;padding:16px;margin-bottom:14px"></div>'+
+    '<div class="lbl">Dirección de retiro</div>'+
+    '<div class="addr" data-go="addrmodal" tabindex="0" role="button"><div class="ico">'+I.pin+'</div><div><b id="addr-title">'+(st.addr?st.addr.direccion:"Selecciona tu dirección")+'</b><p id="addr-sub">'+(st.addr?(st.addr.referencia||"Toca para cambiar"):"Obligatoria para recibir el servicio")+'</p></div><button type="button" class="cambiar">Cambiar</button></div>'+
+    '<div class="lbl">Fecha y hora</div><div class="dt">'+I.cal+' <input class="input-date" id="sched-date" type="date" value="'+new Date(Date.now()+86400000).toISOString().slice(0,10)+'"></div><div class="dt">'+I.clock+' <select class="input select-time" id="sched-time"><option value="08:00">8:00 a.m.</option><option value="10:00">10:00 a.m.</option><option value="12:00">12:00 p.m.</option><option value="14:00" selected>2:00 p.m.</option><option value="16:00">4:00 p.m.</option><option value="18:00">6:00 p.m.</option></select></div>'+
+    '<label class="lbl" for="notes">Notas (opcional)</label><textarea class="input" id="notes" rows="3" placeholder="Ej. Ropa delicada, camisas blancas..."></textarea>'+
+    '<button class="btn" id="btn-confirm" style="margin-top:14px">Confirmar y pagar</button>'+
+    '</div>'+
+  '</section>'+
+  '<section class="screen" id="addrmodal">'+
+    '<div class="topbar"><button class="back-btn" aria-label="Volver" data-go="schedule">‹</button><div><h1>Agregar dirección</h1></div></div>'+
+    '<div class="scroll">'+
+    '<label class="lbl" for="ad-direccion">Dirección</label><input class="input" id="ad-direccion" placeholder="Ej. Av. Bolívar, Edif. Centro, Piso 3">'+
+    '<label class="lbl" for="ad-ref">Referencia (casa, edificio, apartamento)</label><input class="input" id="ad-ref" placeholder="Ej. Casa blanca, frente a la plaza">'+
+    '<label class="lbl" for="ad-tipo">Tipo</label><select class="input" id="ad-tipo"><option value="CASA">Casa</option><option value="TRABAJO">Trabajo</option><option value="OTRO">Otro</option></select>'+
+    '<p class="map-note" style="font-size:12px;color:var(--text-2);margin:8px 0 12px">Pronto podrás elegir el punto exacto en el mapa. Por ahora ingresa tu dirección.</p>'+
+    '<button class="btn" id="btn-save-addr">Guardar dirección</button>'+
+    '</div>'+
+  '</section>'+
+  '<section class="screen" id="tracking">'+
+    '<div class="topbar"><button class="back-btn" aria-label="Volver" data-go="orders">‹</button><div><h1>Seguimiento de pedido</h1></div></div>'+
+    '<div class="scroll" id="tracking-body"></div>'+
+  '</section>'+
+  '<section class="screen" id="orders">'+
+    '<div class="topbar"><div><h1>Mis pedidos</h1></div></div>'+
+    '<div class="scroll" id="orders-body"></div>'+
+  '</section>'+
+  '<section class="screen" id="profile"><div class="scroll flat">'+
+    '<div class="pf-head"><div class="pf-ava">'+(st.user?st.user.nombre.split(" ").map(function(n){return n[0]}).join("").slice(0,2).toUpperCase():"LV")+'</div><h3>'+(st.user?st.user.nombre:"")+'</h3><p>'+(st.user?st.user.email:"")+'</p></div>'+
+    '<div class="menu" style="margin-top:22px">'+
+    '<div class="menu-item" data-go="miperfil" tabindex="0" role="button"><span class="ic">'+I.user+'</span><span>Perfil</span><span class="val">Mi información</span><span class="arr">›</span></div>'+
+    '<div class="menu-item" data-go="compras" tabindex="0" role="button"><span class="ic">'+I.receipt+'</span><span>Compras</span><span class="val">Mis pedidos</span><span class="arr">›</span></div>'+
+    '<div class="menu-item" data-go="addrlist" tabindex="0" role="button"><span class="ic">'+I.pin+'</span><span>Direcciones</span><span class="val">Domicilio registrado</span><span class="arr">›</span></div>'+
+    '<div class="menu-item" data-go="support" tabindex="0" role="button"><span class="ic">'+I.help+'</span><span>Ayuda y soporte</span><span class="arr">›</span></div>'+
+    '<div class="menu-item" id="btn-cerrar" tabindex="0" role="button"><span class="ic" style="color:var(--danger,#d33)">'+I.back+'</span><span style="color:var(--danger,#d33)">Cerrar sesión</span><span class="arr">›</span></div>'+
+    '</div>'+
+  '</div></section>'+
+  '<section class="screen" id="miperfil">'+
+    '<div class="topbar"><button class="back-btn" aria-label="Volver" data-go="profile">‹</button><div><h1>Mi perfil</h1><div class="sub">Actualiza tus datos</div></div></div>'+
+    '<div class="scroll">'+
+    '<div class="card" style="background:#fff;border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:14px">'+
+      '<div id="mi-plan-card" style="background:linear-gradient(150deg,var(--primary),var(--primary-2));border-radius:16px;padding:16px;color:#fff;margin-bottom:16px">'+
+        '<div style="font-size:12px;opacity:.85">MI PLAN</div>'+
+        '<div id="mi-plan-name" style="font-size:20px;font-weight:800;margin-top:4px">—</div>'+
+        '<div id="mi-plan-detail" style="font-size:13px;opacity:.9;margin-top:6px"></div>'+
+      '</div>'+
+      '<div class="lbl">Nombre completo</div><input class="input" id="mp-nombre">'+
+      '<div class="lbl">Cédula</div><input class="input" id="mp-cedula" readonly style="background:var(--bg-soft)">'+
+      '<div class="lbl">Correo electrónico</div><input class="input" id="mp-email" type="email">'+
+      '<div class="lbl">Teléfono</div><input class="input" id="mp-tel">'+
+      '<button class="btn" id="btn-save-profile" style="margin-top:16px">Guardar cambios</button>'+
+    '</div>'+
+    '</div>'+
+  '</section>'+
+  '<section class="screen" id="compras">'+
+    '<div class="topbar"><button class="back-btn" aria-label="Volver" data-go="profile">‹</button><div><h1>Mis compras</h1><div class="sub">Historial de pedidos</div></div></div>'+
+    '<div class="scroll" id="compras-body"></div>'+
+  '</section>'+
+  '<section class="screen" id="addrlist">'+
+    '<div class="topbar"><button class="back-btn" aria-label="Volver" data-go="profile">‹</button><div><h1>Mis direcciones</h1><div class="sub">Toca para ver en el mapa</div></div></div>'+
+    '<div class="scroll" id="addrlist-body"></div>'+
+  '</section>'+
+  '<section class="screen" id="support">'+
+    '<div class="topbar"><button class="back-btn" aria-label="Volver" data-go="profile">‹</button><div><h1>Ayuda y soporte</h1></div></div>'+
+    '<div class="scroll"><label class="lbl" for="sup-subject">Asunto</label><input class="input" id="sup-subject" placeholder="Ej. Problema con mi pedido">'+
+    '<label class="lbl" for="sup-msg">Mensaje</label><textarea class="input" id="sup-msg" rows="4" placeholder="Describe tu problema..."></textarea>'+
+    '<button class="btn" id="btn-send" style="margin-top:16px">Enviar mensaje</button></div>'+
+  '</section>'+
+  '<nav class="bnav">'+
+  '<button data-tab="home" class="on"><span class="pill">'+I.home+'</span>Inicio</button>'+
+  '<button data-tab="orders"><span class="pill">'+I.receipt+'</span>Pedidos</button>'+
+  '<button data-tab="plans"><span class="pill">'+I.star+'</span>Planes</button>'+
+  '<button data-tab="profile"><span class="pill">'+I.user+'</span>Perfil</button>'+
+  '</nav>';
+  renderPlans(); renderOrders(); bind();
+}
+
+var dbPlans=[];
+function loadPlans(){
+  apiGet("/api/plans").then(function(d){
+    dbPlans=(d.planes||[]).map(function(p){
+      var tipo=p.tipoCobro==="POR_CESTA"?"por cesta":"por kg";
+      var cant=p.tipoCobro==="POR_CESTA"?(p.cantidadIncluida||1)+" cesta(s) incluidas":"Hasta "+p.kgLimite+" kg incluidos";
+      var feats=[""+cant];
+      if(p.deliveryIncluido)feats.push("Retiro y entrega a domicilio");
+      if(p.incluyePlanchado)feats.push("Incluye planchado");
+      if(p.descuentoExtra>0)feats.push(p.descuentoExtra+"% OFF en servicios extra");
+      if(p.atencionPrioritaria)feats.push("Atención prioritaria");
+      return {id:p.id,name:p.nombre,desc:p.descripcion||"",price:p.precio,kg:p.kgLimite,tipo:tipo,pop:p.nombre==="Estándar",f:feats};
+    });
+    renderPlans();
+  }).catch(function(){renderPlans()});
+}
+
+function renderPlans(){
+  var el=$("#plans-list"); if(!el) return;
+  var list=dbPlans.length?dbPlans:P;
+  el.innerHTML=list.map(function(p){
+    var price=p.price.toFixed(2); var sel=db.plan===p.id;
+    return '<div class="plan'+(p.pop?" pop":"")+'">'+(p.pop?'<div class="tag">Popular</div>':'')+
+    '<h4>'+p.name+'</h4><div class="desc">'+p.desc+'</div>'+
+    '<div class="price"><b>$'+price+'</b><span>'+(p.tipo?" por "+p.tipo:"")+'</span></div>'+
+    '<ul>'+p.f.map(function(ft){return '<li>'+I.check+ft+'</li>'}).join("")+'</ul>'+
+    '<button class="btn '+(sel?"outline":"")+'" data-plan="'+p.id+'">'+(sel?"Plan activado ✓":"Solicitar plan")+'</button></div>';
+  }).join("");
+}
+
+function renderPlanConfirm(){
+  var sc=$("#sc-sub"); if(sc)sc.textContent="Elige dirección, fecha y hora";
+  var el=$("#plan-confirm"); if(!el)return;
+  var p=st.planSel;
+  if(!p){return}
+  el.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:17px">'+p.name+'</b><div style="font-size:13px;color:var(--text-2);margin-top:2px">'+p.desc+'</div></div><div style="text-align:right"><b style="font-size:20px;color:var(--primary)">$'+p.price.toFixed(2)+'</b><div style="font-size:12px;color:var(--text-2)">'+(p.tipo?"por "+p.tipo:"")+'</div></div></div>';
+}
+
+var realOrders=[];
+function onAuth(){
+  if(!st.user)return;
+  var hn=$("#h-name"); if(hn)hn.textContent=st.user.nombre;
+  renderOrdersReal();
+}
+
+function cargarMiPerfil(){
+  apiGet("/api/auth/me").then(function(d){
+    var u=d.user||{};
+    st.user=u;
+    var e=document.getElementById("mp-nombre"); if(e)e.value=u.nombre||"";
+    var c=document.getElementById("mp-cedula"); if(c)c.value=u.cedula||"";
+    var em=document.getElementById("mp-email"); if(em)em.value=u.email||"";
+    var t=document.getElementById("mp-tel"); if(t)t.value=u.telefono||"";
+
+    // Plan adquirido: usar suscripción activa, o último pedido comprado
+    var sub=d.subscription;
+    var pn=document.getElementById("mi-plan-name");
+    var pd=document.getElementById("mi-plan-detail");
+    if(sub&&sub.plan){
+      if(pn)pn.textContent=sub.plan.nombre;
+      var det="Bs"+sub.plan.precio.toFixed(2);
+      if(sub.plan.kgLimite)det+=" • hasta "+sub.plan.kgLimite+" kg";
+      if(pd)pd.textContent=det;
+      return;
+    }
+    // fallback: último pedido
+    apiGet("/api/orders").then(function(o){
+      var list=o.orders||[];
+      var comprado=list.find(function(x){return x.status!=="CANCELADO"});
+      if(!comprado){ if(pn)pn.textContent="Sin plan activo"; if(pd)pd.textContent="Elige un plan en la sección Planes"; return; }
+      if(pn)pn.textContent=comprado.servicio||"Plan";
+      if(pd)pd.textContent="$"+Number(comprado.costoTotal||0).toFixed(2)+" • "+(comprado.fechaRetiro||"");
+    }).catch(function(){});
+  }).catch(function(){});
+}
+
+function skeletonList(n){
+  var s="";
+  for(var i=0;i<n;i++){ s+='<div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:10px">'+
+    '<div class="skeleton" style="height:14px;width:40%;margin-bottom:10px"></div>'+
+    '<div class="skeleton" style="height:12px;width:70%"></div>'+
+    '<div class="skeleton" style="height:12px;width:50%;margin-top:8px"></div></div>'; }
+  return s;
+}
+function renderCompras(){
+  var el=$("#compras-body"); if(!el)return;
+  el.innerHTML=skeletonList(2);
+  var lbl={PENDIENTE:"Pendiente",CONFIRMADO:"Confirmado",RECOGIDO:"Recogido",EN_LAVADO:"Lavando",PLANCHADO:"Planchando",EN_ENTREGA:"En camino",ENTREGADO:"Entregado",CANCELADO:"Cancelado"};
+  apiGet("/api/orders").then(function(d){
+    var list=d.orders||[];
+    if(list.length===0){el.innerHTML='<div class="empty"><div class="ic">'+I.receipt+'</div>Aún no has comprado. Elige un plan y haz tu primer pedido.</div>';return}
+    el.innerHTML=list.map(function(o){
+      return '<div class="ord-card"><div class="row" style="margin-bottom:8px"><b>#'+o.id.slice(-6).toUpperCase()+'</b><span class="badge">'+(lbl[o.status]||o.status)+'</span></div>'+
+      '<div style="font-size:13px;color:var(--text-2)">'+(o.servicio||"")+(o.pesoEstimado?" • "+o.pesoEstimado+" kg":"")+'</div>'+
+      '<div style="font-size:13px;color:var(--text-2);margin-top:4px">'+(o.fechaRetiro||"")+' '+(o.horaRetiro||"")+'</div>'+
+      '<div class="row" style="margin-top:10px"><b style="font-size:16px">$'+Number(o.costoTotal||0).toFixed(2)+'</b></div></div>';
+    }).join("");
+  }).catch(function(){el.innerHTML='<div class="empty"><div class="ic">'+I.receipt+'</div>Aún no has comprado.</div>'});
+}
+
+function renderAddrList(){
+  var el=$("#addrlist-body"); if(!el)return;
+  apiGet("/api/addresses").then(function(d){
+    var list=d.addresses||[];
+    if(list.length===0){el.innerHTML='<div class="empty"><div class="ic">'+I.pin+'</div>No tienes direcciones registradas.</div>';return}
+    el.innerHTML=list.map(function(a){
+      var url="https://www.google.com/maps?q="+a.lat+","+a.lng;
+      return '<div class="addr" style="margin-bottom:12px"><div class="ico">'+I.pin+'</div><div><b>'+a.direccion+'</b><p>'+(a.referencia||(a.tipo||"CASA"))+'</p><a href="'+url+'" target="_blank" rel="noopener" style="color:var(--primary);font-size:14px;font-weight:600;display:inline-block;margin-top:4px">Ver en Google Maps ›</a></div></div>';
+    }).join("");
+  }).catch(function(){el.innerHTML='<div class="empty"><div class="ic">'+I.pin+'</div>No tienes direcciones registradas.</div>'});
+}
+
+function mostrarAyuda(){
+  var m=document.createElement("div"); m.className="modal";
+  m.innerHTML='<div class="card" style="background:#fff;border-radius:22px;padding:24px;width:88%;max-width:360px;text-align:left">'+
+    '<div style="text-align:center;margin-bottom:12px"><h3>Comunícate con LavaYa</h3><p style="color:var(--text-2);font-size:14px;margin-top:4px">¿Necesitas ayuda? Estamos aquí.</p></div>'+
+    '<div class="menu-item" id="h-chat" tabindex="0" role="button"><span class="ic">'+I.headset+'</span><span>Chat</span><span class="arr">›</span></div>'+
+    '<div class="menu-item" data-go="support" tabindex="0" role="button"><span class="ic">'+I.help+'</span><span>FAQ / Soporte</span><span class="arr">›</span></div>'+
+    '<div class="menu-item" id="h-wa" tabindex="0" role="button"><span class="ic">'+I.home+'</span><span>WhatsApp</span><span class="arr">›</span></div>'+
+    '<div style="margin-top:14px;padding:12px;background:var(--bg-soft);border-radius:12px;font-size:13px;color:var(--text-2);line-height:1.5">Para reclamos o dudas usa el chat o WhatsApp.</div>'+
+    '<button class="btn" id="h-cerrar" style="margin-top:14px">Cerrar</button></div>';
+  document.body.appendChild(m);
+  var cerrar=function(){m.remove();document.removeEventListener("keydown",esc)};
+  var esc=function(e){if(e.key==="Escape")cerrar()};
+  document.getElementById("h-cerrar").addEventListener("click",cerrar);
+  document.getElementById("h-chat").addEventListener("click",function(){cerrar();toast("Chat disponible próximamente")});
+  document.getElementById("h-wa").addEventListener("click",function(){cerrar();toast("WhatsApp: +58 412 1234567")});
+  m.addEventListener("click",function(e){if(e.target===m)cerrar()});
+}
+
+function cerrarSesion(){
+  saveToken(null); localStorage.removeItem("lavaya_user"); localStorage.removeItem("lavaya_biometric");
+  st.user=null; st.cur=null; st.curPre=null;
+  show("login"); toast("Sesión cerrada");
+}
+function iniciarOTP(){
+  var d=document.getElementById("otp-demo");
+  if(st.otpDemo&&d)d.textContent="Código de prueba (Twilio no configurado): "+st.otpDemo;
+  else if(d)d.textContent="";
+  var cod=document.getElementById("otp-codigo"); if(cod){cod.value="";cod.focus();}
+}
+function verificarOTP(){
+  var cod=document.getElementById("otp-codigo").value.trim();
+  if(cod.length!==6){toast("Ingresa el código de 6 dígitos");return}
+  var b=document.getElementById("btn-otp-verify");b.textContent="Verificando...";b.disabled=true;
+  apiPost("/api/auth/otp/verify",{codigo:cod}).then(function(){
+    b.textContent="Verificar";b.disabled=false;
+    toast("Número verificado ✅"); st.otpDemo=null;
+    show("home");
+  }).catch(function(err){
+    b.textContent="Verificar";b.disabled=false;
+    toast(err.message||"Código incorrecto");
+  });
+}
+function reenviarOTP(){
+  var b=document.getElementById("btn-otp-resend");b.textContent="Enviando...";b.disabled=true;
+  apiPost("/api/auth/otp/send",{}).then(function(d){
+    st.otpDemo=d.demo||null;
+    var el=document.getElementById("otp-demo");
+    if(st.otpDemo&&el)el.textContent="Código de prueba (Twilio no configurado): "+st.otpDemo;
+    b.textContent="Reenviar código";b.disabled=false;
+    toast("Código enviado");
+  }).catch(function(err){
+    b.textContent="Reenviar código";b.disabled=false;
+    toast(err.message||"Error al reenviar");
+  });
+}
+function renderOrdersReal(){
+  if(!st.token){return}
+  var el=$("#orders-body"); if(el&&!realOrders.length)el.innerHTML=skeletonList(2);
+  apiGet("/api/orders").then(function(d){ realOrders=d.orders||[]; renderOrders(); }).catch(function(){});
+}
+function renderOrders(){
+  var el=$("#orders-body"); if(!el) return;
+  var list=realOrders.length?realOrders:db.orders;
+  if(list.length===0){el.innerHTML='<div class="empty"><div class="ic">'+I.receipt+'</div>Aún no tienes pedidos</div>';return}
+  var lbl={PENDIENTE:"Pendiente",CONFIRMADO:"Confirmado",RECOGIDO:"Recogido",EN_LAVADO:"Lavando",PLANCHADO:"Planchando",EN_ENTREGA:"En camino",ENTREGADO:"Entregado",CANCELADO:"Cancelado"};
+  el.innerHTML=list.map(function(o){
+    var stt=o.status||"PENDIENTE"; var s=lbl[stt]||stt;
+    return '<div class="ord-card" data-track="'+o.id+'" tabindex="0" role="button">'+
+    '<div class="row" style="margin-bottom:10px"><b>Pedido #'+o.id.slice(-6).toUpperCase()+'</b><span class="badge'+(stt==="ENTREGADO"?" green":"")+'">'+s+'</span></div>'+
+    '<div style="font-size:13px;color:var(--text-2)">'+ (o.servicio||"Lavar") +' • '+(o.pesoEstimado||0)+' kg</div>'+
+    '<div style="font-size:13px;color:var(--text-2);margin-top:4px">'+(o.fechaRetiro||"")+' • '+(o.horaRetiro||"")+'</div>'+
+    '<div class="row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">'+
+    '<b style="font-size:17px">$'+Number(o.costoTotal||0).toFixed(2)+'</b>'+
+    '<span style="color:var(--primary);font-weight:600;font-size:13px">Ver seguimiento →</span>'+
+    '</div></div>';
+  }).join("");
+}
+
+function renderTracking(){
+  var el=$("#tracking-body"); if(!el) return;
+  var o=st.cur?realOrders.find(function(x){return x.id===st.cur}):realOrders[0];
+  if(!o){el.innerHTML='<div class="empty"><div class="ic">'+I.receipt+'</div>No hay pedidos</div>';return}
+  var stepMap={PENDIENTE:0,CONFIRMADO:1,RECOGIDO:2,EN_LAVADO:3,PLANCHADO:4,EN_ENTREGA:5,ENTREGADO:6};
+  var step=stepMap[o.status]!==undefined?stepMap[o.status]:1;
+  var t=F[step].t;
+  el.innerHTML='<div class="ord-head"><div><h3>Pedido #'+o.id.slice(-6).toUpperCase()+'</h3><p>'+(o.fechaRetiro||'')+' • '+(o.horaRetiro||'')+'</p></div><span class="badge">'+(o.servicio||'Lavar')+'</span></div>'+
+  '<div class="status-hero"><div class="big">'+I.bike+'</div><h3>'+t+'</h3><p>Nuestro equipo está gestionando tu pedido.</p></div>'+
+  '<div>'+F.map(function(f,i){
+    var cls=i<step?"done":(i===step?"active":""); var mk=i<step?"✓":(i+1);
+    return '<div class="tl-item '+cls+'"><div class="tl-dot">'+mk+'</div><div><h4>'+f.t+'</h4><p>'+(i<=step?f.time:"Pendiente")+'</p></div></div>';
+  }).join("")+'</div>'+
+  '<button class="btn" data-go="orders">Ver mis pedidos</button>'+
+  '<button class="btn ghost" data-go="support" style="margin-top:10px">Contactar soporte</button>';
+}
+
+function rate(){
+  var o=st.cur?db.orders.find(function(x){return x.id===st.cur}):db.orders[0];
+  var stars=""; for(var i=1;i<=5;i++) stars+='<button data-n="'+i+'">★</button>';
+  var m=document.createElement("div"); m.className="modal";
+  m.innerHTML='<div style="background:#fff;border-radius:22px;padding:24px;width:88%;max-width:340px;text-align:center">'+
+  '<h3 style="margin-bottom:6px">Califica tu servicio</h3><p style="color:var(--text-2);font-size:14px">¿Cómo te pareció LavaYa?</p>'+
+  '<div class="rate">'+stars+'</div><button class="btn" id="rate-ok">Enviar</button></div>';
+  document.body.appendChild(m);
+  var n=5;
+  m.querySelectorAll(".rate button").forEach(function(b){b.addEventListener("click",function(){n=+b.getAttribute("data-n");m.querySelectorAll(".rate button").forEach(function(x,i){x.classList.toggle("on",i<n)})})});
+  m.querySelector("#rate-ok").addEventListener("click",function(){if(o){o.status="delivered";o.step=F.length-1;o.rating=n;save()}m.remove();renderTracking();renderOrders();toast("¡Gracias por tu calificación!")});
+  m.addEventListener("click",function(e){if(e.target===m)m.remove()});
+}
+
+function previewPrice(){
+  var el=$("#price-preview"); if(!el)return;
+  if(!st.sel){el.innerHTML="Selecciona un servicio para ver el costo.";return}
+  var kg=parseFloat($("#kg").value||"5");
+  var tar={lavar:2,planchar:2.5,["lavar-planchar"]:4,solo:2.5};
+  var svc=S.find(function(s){return s.id===st.sel});
+  var total=(tar[st.sel]||2)*kg;
+  el.innerHTML='<b>'+svc.name+'</b> — '+kg+' kg × $'+tar[st.sel].toFixed(2)+'/kg = <b style="color:var(--primary)">$'+total.toFixed(2)+'</b>'+(st.addr?'':'<br><span style="color:var(--danger,#d33)">Agrega tu dirección para continuar.</span>');
+}
+
+function renderMontoPago(pre){
+  st.curPre=pre;
+  var el=document.getElementById("pay-body"); if(!el)return;
+  apiGet("/api/configuracion-pago").then(function(d){
+    var cfg=d.config||{banco:"Banesco",telefonoPago:"0412-1234567",cedulaPago:"V-12345678",titular:"Lavandería LavaYa",tipoCuenta:"Corriente"};
+    var monto=pre.montoCongelado||0;
+    var datos="Pago a:\nBanco: "+cfg.banco+"\nTeléfono: "+cfg.telefonoPago+"\nCédula: "+cfg.cedulaPago+"\nTitular: "+cfg.titular+"\nCuenta: "+cfg.tipoCuenta+"\nMonto: $"+monto.toFixed(2)+"\nReferencia: "+pre.ticketPre;
+    el.innerHTML=
+      '<div class="pay-plan"><div class="pay-plan-name">'+(pre.plan?pre.plan.nombre:"Plan")+'</div><div class="pay-plan-sub">Ticket '+pre.ticketPre+'</div></div>'+
+      '<div class="pay-amount"><small>Monto a pagar</small><b>$'+monto.toFixed(2)+'</b></div>'+
+      '<div class="pay-entry"><span class="pay-lbl">Banco</span><span class="pay-val">'+cfg.banco+'</span></div>'+
+      '<div class="pay-entry"><span class="pay-lbl">Teléfono</span><span class="pay-val">'+cfg.telefonoPago+'</span></div>'+
+      '<div class="pay-entry"><span class="pay-lbl">Cédula</span><span class="pay-val">'+cfg.cedulaPago+'</span></div>'+
+      '<div class="pay-entry"><span class="pay-lbl">Titular</span><span class="pay-val">'+cfg.titular+'</span></div>'+
+      '<div class="pay-entry"><span class="pay-lbl">Cuenta</span><span class="pay-val">'+cfg.tipoCuenta+'</span></div>'+
+      '<button class="btn btn-ghost" id="btn-copiar" style="margin:14px 0">Copiar todo</button>'+
+      '<label class="lbl" style="margin-top:6px">Sube tu comprobante de pago</label>'+
+      '<input type="file" id="pay-comprobante" accept="image/*" capture="environment" class="input" style="margin-bottom:10px">'+
+      '<div id="pay-comp-name" style="font-size:12px;color:var(--text-2);margin:6px 0 10px"></div>'+
+      '<button class="btn" id="btn-yapague">Ya pagué</button>';
+    var cp=document.getElementById("btn-copiar");
+    if(cp)cp.addEventListener("click",function(){
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(datos).then(function(){toast("Datos copiados")}).catch(function(){copiarDatos(datos)})}
+      else copiarDatos(datos);
+    });
+    var pc=document.getElementById("pay-comprobante");
+    if(pc)pc.addEventListener("change",function(){
+      var f=this.files&&this.files[0];
+      var cn=document.getElementById("pay-comp-name");
+      if(!f){st.comprobante=null; if(cn)cn.textContent=""; return}
+      st.comprobante=null; if(cn)cn.textContent="Procesando comprobante...";
+      comprimirFoto(f,function(data,err){
+        if(err){if(cn)cn.textContent=""; toast(err); return}
+        st.comprobante=data; if(cn)cn.textContent="Comprobante adjuntado ✓ "+f.name;
+      });
+    });
+    var yp=document.getElementById("btn-yapague");
+    if(yp)yp.addEventListener("click",function(){confirmarPago(pre.id)});
+  }).catch(function(){toast("No se pudieron cargar los datos de pago")});
+}
+
+function copiarDatos(datos){
+  var ta=document.createElement("textarea"); ta.value=datos; document.body.appendChild(ta); ta.select();
+  try{document.execCommand("copy");toast("Datos copiados")}catch(e){toast("Copia manualmente")}
+  document.body.removeChild(ta);
+}
+
+function comprimirFoto(file,cb){
+  var reader=new FileReader();
+  reader.onload=function(){
+    var img=new Image();
+    img.onload=function(){
+      var MAX=800;
+      var w=img.width,h=img.height;
+      if(w>MAX||h>MAX){
+        var r=Math.min(MAX/w,MAX/h);
+        w=Math.round(w*r); h=Math.round(h*r);
+      }
+      var canvas=document.createElement("canvas");
+      canvas.width=w; canvas.height=h;
+      var ctx=canvas.getContext("2d");
+      ctx.drawImage(img,0,0,w,h);
+      var data=canvas.toDataURL("image/jpeg",0.7);
+      cb(data,null);
+    };
+    img.onerror=function(){cb(null,"No se pudo leer la imagen")};
+    img.src=String(reader.result);
+  };
+  reader.onerror=function(){cb(null,"Error al leer la foto")};
+  reader.readAsDataURL(file);
+}
+
+function confirmarPago(preId){
+  var b=document.getElementById("btn-yapague"); if(b){b.textContent="Enviando...";b.disabled=true}
+  apiPost("/api/preordenes/"+preId+"/pagar",{comprobanteRuta:st.comprobante}).then(function(d){
+    toast("Pago enviado. El administrador lo confirmará.");
+    st.curPre=null;
+    if(b){b.textContent="Ya pagué";b.disabled=false}
+    renderPreEstados(); show("orders");
+  }).catch(function(err){
+    if(b){b.textContent="Ya pagué";b.disabled=false}
+    toast(err.message||"Error al enviar");
+  });
+}
+
+function renderPreEstados(){
+  var el=$("#orders-body"); if(!el)return;
+  apiGet("/api/preordenes").then(function(d){
+    var pre=(d.preOrdenes||[]).filter(function(p){return p.estado==="PENDIENTE"||p.estado==="PAGO_EN_PROCESO"||p.estado==="RECHAZADO"});
+    if(pre.length>0&&!realOrders.length){
+      var pr=pre[0];
+      var lbl={PENDIENTE:"Pendiente de pago",PAGO_EN_PROCESO:"Pago en proceso",RECHAZADO:"Rechazado"};
+      var extra=pr.estado==="RECHAZADO"?'<div style="color:var(--danger,#d33);font-size:13px;margin-top:6px">Motivo: '+(pr.rechazoMotivo||"")+'</div>':'';
+      el.innerHTML='<div class="ord-card"><div class="row" style="margin-bottom:10px"><b>'+pr.ticketPre+'</b><span class="badge">'+(lbl[pr.estado]||pr.estado)+'</span></div>'+
+        '<div style="font-size:13px;color:var(--text-2)">'+(pr.plan?pr.plan.nombre:"")+'</div>'+
+        '<div style="font-size:13px;color:var(--text-2);margin-top:4px">$'+pr.montoCongelado.toFixed(2)+'</div>'+extra+
+        '</div>';
+      return;
+    }
+    renderOrdersReal();
+  }).catch(function(){renderOrdersReal()});
+}
+
+function bind(){
+  document.addEventListener("click",function(e){
+    var planBtn=e.target.closest("[data-plan]");
+    if(planBtn){
+      var planId=planBtn.getAttribute("data-plan");
+      if(!st.token){toast("Inicia sesión para continuar");show("login");return}
+      st.planSel=dbPlans.find(function(x){return x.id===planId})||{id:planId,name:"Plan"};
+      renderPlanConfirm();
+      show("schedule");
+      return;
+    }
+    var go=e.target.closest("[data-go]"); if(go){ var id=go.getAttribute("data-go"); if(id==="tracking")renderTracking(); if(id==="orders")renderPreEstados(); if(id==="miperfil")cargarMiPerfil(); if(id==="compras")renderCompras(); if(id==="addrlist")renderAddrList(); show(id); return; }
+    var tab=e.target.closest("[data-tab]"); if(tab){ if(tab.getAttribute("data-tab")==="orders")renderPreEstados(); document.querySelectorAll(".bnav button").forEach(function(b){b.classList.remove("on")}); tab.classList.add("on"); show(tab.getAttribute("data-tab")); return; }
+    var skip=e.target.closest('.onb-skip');
+    if(skip){localStorage.setItem('lavaya_seen','1');show('welcome');return;}
+    var slide=e.target.closest('.slide-wrap');
+    if(slide){var sid=slide.id;if(sid==='slide1'){show('onb2');}else if(sid==='slide2'){localStorage.setItem('lavaya_seen','1');show('welcome');}}
+  });
+  document.addEventListener("keydown",function(e){if(e.key!=="Enter"&&e.key!==" ")return;var t=e.target.closest('[data-go],[data-tab],[data-svc],[data-track],[data-plan],[role="button"]');if(t){e.preventDefault();t.click();}});
+  document.querySelectorAll("[data-soon]").forEach(function(el){el.addEventListener("click",function(){toast("Disponible próximamente")})});
+  $("#btn-pass").addEventListener("click",function(){var i=$("#l-pass");var s=i.type==="password";i.type=s?"text":"password";this.textContent=s?"Ocultar":"Mostrar";});
+  $("#btn-login").addEventListener("click",function(){
+    var ced=$("#l-cedula").value.trim(),pw=$("#l-pass").value;
+    if(!ced||!pw){toast("Ingresa tu cédula y contraseña");return}
+    var b=this; b.textContent="Ingresando...";
+    apiPost("/api/auth/login",{identificador:ced,password:pw}).then(function(d){
+      st.user=d.user; saveToken(d.token);
+      db.user={name:d.user.nombre,email:d.user.email}; save();
+      localStorage.setItem("lavaya_user",JSON.stringify(d.user));
+      b.textContent="Iniciar sesión"; onAuth(); show("home"); toast("Bienvenido, "+d.user.nombre);
+    }).catch(function(err){b.textContent="Iniciar sesión";toast(err.message||"Error al iniciar sesión")});
+  });
+  $("#btn-reg").addEventListener("click",function(){show("register")});
+  $("#btn-register").addEventListener("click",function(){
+    var ced=$("#r-cedula").value.trim(),nom=$("#r-nombre").value.trim(),em=$("#r-email").value.trim(),tel=$("#r-tel").value.trim(),pw=$("#r-pass").value;
+    if(!ced||!nom||!em||!tel||!pw){toast("Completa todos los campos");return}
+    ced=ced.replace(/[^0-9]/g,"");
+    if(ced.length<6){toast("Ingresa un número de cédula válido (Cédula sin la letra, ej. 12345678)");return}
+    var file=$("#r-foto").files&&$("#r-foto").files[0];
+    if(!file){toast("Sube la foto de tu cédula");return}
+    var b=document.getElementById("btn-register"); b.textContent="Preparando foto..."; b.disabled=true;
+    comprimirFoto(file,function(fotoData,err){
+      if(err){b.textContent="Crear mi cuenta";b.disabled=false;toast(err);return}
+      apiPost("/api/auth/register",{cedula:ced,nombre:nom,email:em,telefono:tel,password:pw,fotoCedula:fotoData}).then(function(d){
+        st.user=d.user; saveToken(d.token); db.user={name:d.user.nombre,email:d.user.email}; save();
+        localStorage.setItem("lavaya_user",JSON.stringify(d.user));
+        b.textContent="Crear mi cuenta"; b.disabled=false;
+        st.otpDemo=d.otpDemo||null;
+        onAuth(); show("otp"); iniciarOTP();
+      }).catch(function(err){
+        b.textContent="Crear mi cuenta";b.disabled=false;
+        var msg=err&&err.message?err.message:"Error al crear cuenta";
+        if(msg.indexOf("cédula")>-1&&msg.indexOf("existe")>-1){
+          var lc=document.getElementById("l-cedula"); if(lc)lc.value=ced;
+          toast("Este número de cédula ya está registrado.");
+          setTimeout(function(){show("login")},700);
+        } else if(msg.indexOf("email")>-1&&msg.indexOf("existe")>-1){
+          toast("Ese correo ya está registrado. Inicia sesión.");
+          setTimeout(function(){show("login")},700);
+        } else {
+          toast(msg);
+        }
+      });
+    });
+  });
+  $("#btn-notif").addEventListener("click",function(){toast("No tienes notificaciones nuevas")});
+  var btnHelp=document.getElementById("btn-help"); if(btnHelp)btnHelp.addEventListener("click",mostrarAyuda);
+  var btnCerrar=document.getElementById("btn-cerrar"); if(btnCerrar)btnCerrar.addEventListener("click",cerrarSesion);
+  var btnSaveProfile=document.getElementById("btn-save-profile");
+  if(btnSaveProfile)btnSaveProfile.addEventListener("click",function(){
+    var nom=$("#mp-nombre").value.trim(),em=$("#mp-email").value.trim(),tel=$("#mp-tel").value.trim();
+    if(!nom||!em||!tel){toast("Completa todos los campos");return}
+    var b=this;b.textContent="Guardando...";
+    apiPut("/api/auth/me",{nombre:nom,email:em,telefono:tel}).then(function(d){
+      st.user=d.user; localStorage.setItem("lavaya_user",JSON.stringify(d.user));
+      b.textContent="Guardar cambios"; toast("Perfil actualizado");
+      var hn=$("#h-name"); if(hn)hn.textContent=st.user.nombre;
+    }).catch(function(err){b.textContent="Guardar cambios";toast(err.message||"Error al guardar")});
+  });
+  var btnOtpVerify=document.getElementById("btn-otp-verify");
+  if(btnOtpVerify)btnOtpVerify.addEventListener("click",verificarOTP);
+  var btnOtpResend=document.getElementById("btn-otp-resend");
+  if(btnOtpResend)btnOtpResend.addEventListener("click",reenviarOTP);
+  var otpInput=document.getElementById("otp-codigo");
+  if(otpInput)otpInput.addEventListener("keydown",function(e){
+    if(e.key==="Enter")verificarOTP();
+    var allowed=e.key.length===1&&/[0-9]/.test(e.key);
+    if(!allowed&&e.key!=="Backspace"&&e.key!=="Delete"&&e.key!=="ArrowLeft"&&e.key!=="ArrowRight"&&e.key!=="Tab")e.preventDefault();
+  });
+  var rFoto=document.getElementById("r-foto");
+  if(rFoto)rFoto.addEventListener("change",function(){
+    var f=this.files&&this.files[0];
+    var pv=document.getElementById("foto-preview");
+    if(!pv)return;
+    if(!f){pv.textContent="";return}
+    pv.textContent="Cédula seleccionada: "+f.name+" ✓";
+  });
+  $("#btn-save-addr").addEventListener("click",function(){
+    var dir=$("#ad-direccion").value.trim(),ref=$("#ad-ref").value.trim(),tipo=$("#ad-tipo").value;
+    if(!dir){toast("Ingresa tu dirección");return}
+    if(!st.token){toast("Inicia sesión para guardar tu dirección");return}
+    var b=this;b.textContent="Guardando...";
+    apiPost("/api/addresses",{direccion:dir,referencia:ref,tipo:tipo,lat:10.4806,lng:-66.9036,esPrincipal:true}).then(function(d){
+      st.addr={direccion:d.address.direccion,referencia:d.address.referencia,id:d.address.id};
+      $("#addr-title").textContent=d.address.direccion;$("#addr-sub").textContent=d.address.referencia||"Toca para cambiar";
+      b.textContent="Guardar dirección"; show("schedule"); if(st.planSel)renderPlanConfirm(); toast("Dirección guardada");
+    }).catch(function(err){b.textContent="Guardar dirección";toast(err.message||"Error al guardar dirección")});
+  });
+  $("#btn-confirm").addEventListener("click",function(){
+    if(!st.planSel){toast("Elige un plan primero");show("plans");return}
+    if(!st.addr){toast("Agrega tu dirección para continuar");show("addrmodal");return}
+    var fecha=$("#sched-date").value,hora=$("#sched-time").value,notas=$("#notes").value;
+    if(!st.token){toast("Inicia sesión para agendar");return}
+    var b=this;b.textContent="Confirmando...";
+    apiPost("/api/preordenes",{planId:st.planSel.id,fechaRecogida:fecha,horaRecogida:hora,notas:notas}).then(function(d){
+      b.textContent="Confirmar y pagar"; st.curPre=d.preOrden;
+      renderMontoPago(d.preOrden); show("payment");
+    }).catch(function(err){b.textContent="Confirmar y pagar";toast(err.message||"Error al confirmar")});
+  });
+  $("#btn-send").addEventListener("click",function(){var s=$("#sup-subject").value,m=$("#sup-msg").value;if(!s||!m){toast("Completa asunto y mensaje");return}$("#sup-subject").value="";$("#sup-msg").value="";toast("Mensaje enviado")});
+  $("#orders-body").addEventListener("click",function(e){var c=e.target.closest("[data-track]");if(c){st.cur=c.getAttribute("data-track");renderTracking();show("tracking")}});
+  loadPlans(); if(st.user){onAuth()}
+  startFinger();
+}
+
+function startFinger(){
+  $("#btn-start").addEventListener("click",function(){show("register")});
+  $("#btn-signin").addEventListener("click",function(){show("login")});
+  $("#btn-logout").addEventListener("click",function(){saveToken(null);localStorage.removeItem("lavaya_user");window._fm=1;st.user=null;show("login")});
+}
+
+build();
+setTimeout(function(){
+  if(st.user){
+    show("finger"); doFinger();
+  } else {
+    if(localStorage.getItem('lavaya_seen')){show('welcome');}
+    else {show('onb1');}
+  }
+},1400);
+
+function doFinger(){
+  var msg=$("#finger-msg"); if(!msg)return;
+  msg.textContent="Reconociendo...";
+  try{
+    localStorage.setItem("lavaya_biometric","ok");
+    setTimeout(function(){ onAuth(); show("home"); toast("¡Hola de nuevo!"); },1200);
+  }catch(e){ show("home"); }
+}
+</script>
+</body>
+</html>
